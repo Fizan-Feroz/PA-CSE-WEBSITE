@@ -6,9 +6,10 @@ import FacultySection from './components/FacultySection';
 import LabsSection from './components/LabsSection';
 import CurriculumSection from './components/CurriculumSection';
 import ProjectsAndEventsSection from './components/ProjectsAndEventsSection';
+import TimelineObservatory3D from './components/TimelineObservatory3D';
 import { 
   Search, Terminal, Shield, ArrowRight, 
-  Code2, Users, Cpu, Award, BookOpen, Sparkles 
+  Code2, Users, Cpu, Award, BookOpen, Sparkles, Compass 
 } from 'lucide-react';
 
 export default function App() {
@@ -50,7 +51,7 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
 
-      {/* Poster Hero Section (Authentic INNOVEX '26 Poster Aesthetic) */}
+      {/* Poster Hero Section (Authentic INNOVEX '26 Poster Aesthetic with Orbiting Eye & Spark) */}
       <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 border-b-2 border-[#111111]">
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -83,6 +84,42 @@ export default function App() {
             </button>
           </div>
 
+          {/* Central Mechanical Eye Graphic (Direct from INNOVEX Poster Art) */}
+          <div className="relative mx-auto w-40 h-28 sm:w-48 sm:h-32 mb-4 flex items-center justify-center">
+            <svg 
+              className="w-full h-full overflow-visible" 
+              viewBox="-120 -80 240 160"
+            >
+              {/* Elliptical Orbits with continuous SMIL revolution */}
+              <g transform="rotate(-20)">
+                <ellipse rx="100" ry="32" fill="none" stroke="#111111" strokeWidth="1.5" strokeDasharray="3 4" opacity="0.6" />
+                <circle r="4" fill="#F5B700" stroke="#111111" strokeWidth="1.5">
+                  <animateMotion 
+                    path="M100 0A100 32 0 1 1 -100 0A100 32 0 1 1 100 0Z" 
+                    dur="8s" 
+                    repeatCount="indefinite" 
+                  />
+                </circle>
+              </g>
+
+              <g transform="rotate(25)">
+                <ellipse rx="90" ry="36" fill="none" stroke="#102D69" strokeWidth="1.5" opacity="0.7" />
+                <circle r="4" fill="#102D69" stroke="#111111" strokeWidth="1.5">
+                  <animateMotion 
+                    path="M90 0A90 36 0 1 1 -90 0A90 36 0 1 1 90 0Z" 
+                    dur="11s" 
+                    repeatCount="indefinite" 
+                  />
+                </circle>
+              </g>
+
+              {/* Center Pupil / Spark of INNOVEX */}
+              <circle r="16" fill="#F6F2EB" stroke="#111111" strokeWidth="2.5" />
+              <circle r="8" fill="#102D69" />
+              <circle r="3" fill="#F5B700" />
+            </svg>
+          </div>
+
           {/* Giant Brutalist Poster Heading */}
           <div className="text-center max-w-5xl mx-auto space-y-3">
             <p className="font-tech text-sm sm:text-base font-bold uppercase tracking-[0.25em] text-[#102D69]">
@@ -110,11 +147,11 @@ export default function App() {
             </button>
 
             <a
-              href="#domains-section"
+              href="#timeline-observatory"
               className="w-full sm:w-auto px-6 py-3.5 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
             >
-              <Terminal className="w-4 h-4 text-[#102D69]" />
-              <span>EXPLORE 5 SPECIALIZATION TRACKS</span>
+              <Compass className="w-4 h-4 text-[#102D69]" />
+              <span>3D OBSERVATORY TIMELINE</span>
             </a>
           </div>
 
@@ -151,6 +188,9 @@ export default function App() {
         </div>
       </section>
 
+      {/* 3D Astronomical Clock / Timeline Observatory Section */}
+      <TimelineObservatory3D />
+
       {/* Faculty Directory Section with Pill Filters */}
       <FacultySection />
 
@@ -180,6 +220,7 @@ export default function App() {
 
           <div className="flex flex-wrap items-center justify-center gap-6 font-bold uppercase tracking-wider text-[#F6F2EB]">
             <a href="#domains-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Tracks</a>
+            <a href="#timeline-observatory" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">3D Observatory</a>
             <a href="#faculty-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Faculty</a>
             <a href="#labs-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Laboratories</a>
             <a href="#curriculum-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Syllabus</a>
@@ -194,7 +235,7 @@ export default function App() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-[#F6F2EB]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-[#F6F2EB]/60 text-[11px] uppercase tracking-widest">
           <p>© {new Date().getFullYear()} PA-CSE · P.A. College of Engineering Mangaluru.</p>
-          <p className="font-mono text-[#F5B700]">Engineered in the authentic INNOVEX '26 Print Brutalist Aesthetic</p>
+          <p className="font-mono text-[#F5B700]">Engineered in the authentic INNOVEX '26 Print Brutalist Aesthetic with 3D Astrolabe</p>
         </div>
       </footer>
 

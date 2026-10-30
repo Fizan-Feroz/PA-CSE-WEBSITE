@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Server, ShieldCheck, CheckCircle2, ChevronRight, HardDrive } from 'lucide-react';
+import { Cpu, Server, HardDrive, CheckCircle2 } from 'lucide-react';
 import { LABORATORIES } from '../data/cseData';
 
 export default function LabsSection() {
@@ -7,52 +7,58 @@ export default function LabsSection() {
   const activeLab = LABORATORIES.find(l => l.id === selectedLabId) || LABORATORIES[0];
 
   return (
-    <section id="labs-section" className="py-12 sm:py-16 border-t border-slate-800/80 bg-slate-950/40">
+    <section id="labs-section" className="py-12 sm:py-16 border-t-2 border-[#111111] bg-[#F6F2EB]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8">
-          <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase flex items-center gap-1.5">
-            <Server className="w-3.5 h-3.5" />
-            Infrastructure & Centers of Excellence
+          <span className="font-tech text-xs font-bold tracking-widest text-[#102D69] uppercase flex items-center gap-1.5">
+            <Server className="w-4 h-4 text-[#102D69]" />
+            CENTERS OF EXCELLENCE &amp; R&amp;D RIGS
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight mt-1">
-            Advanced Computing & Research Laboratories
+          <h2 className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] tracking-wide uppercase mt-1 leading-none">
+            COMPUTING &amp; CYBER LABORATORIES
           </h2>
-          <p className="text-sm text-slate-400 max-w-xl mt-1">
-            Enterprise GPU workstations, isolated cyber threat sandboxes, AWS cloud nodes, and rapid IoT fabrication.
+          <p className="font-sans text-xs sm:text-sm text-[#111111]/70 max-w-xl mt-2 font-medium">
+            Air-gapped penetration testing facilities, high-density GPU model training rigs, and AWS cloud staging clusters.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Lab Selection Column */}
-          <div className="lg:col-span-5 space-y-2.5">
+          {/* Lab List Selection */}
+          <div className="lg:col-span-5 space-y-3">
             {LABORATORIES.map((lab) => {
               const isSelected = lab.id === selectedLabId;
               return (
                 <div
                   key={lab.id}
                   onClick={() => setSelectedLabId(lab.id)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-4 rounded-[2px] border-2 cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-slate-900 border-cyan-500/60 shadow-lg shadow-cyan-500/10'
-                      : 'bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-900/70'
+                      ? 'bg-[#102D69] text-[#F6F2EB] border-[#111111] shadow-print -translate-x-px -translate-y-px'
+                      : 'bg-[#E6DED4] border-[#111111] text-[#111111] hover:bg-[#F6F2EB] shadow-print-sm'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-400 font-semibold">
+                    <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded-[2px] border ${
+                      isSelected ? 'bg-[#F5B700] text-[#111111] border-[#111111]' : 'bg-[#F6F2EB] text-[#102D69] border-[#111111]'
+                    }`}>
                       {lab.code}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className={`font-tech text-xs font-bold uppercase ${
+                      isSelected ? 'text-[#F6F2EB]/80' : 'text-[#111111]/60'
+                    }`}>
                       {lab.capacity}
                     </span>
                   </div>
-                  <h4 className={`text-sm font-bold transition-colors ${
-                    isSelected ? 'text-cyan-300' : 'text-slate-200'
+                  <h4 className={`font-tech text-base font-bold uppercase tracking-wide mt-1.5 ${
+                    isSelected ? 'text-[#F6F2EB]' : 'text-[#111111]'
                   }`}>
                     {lab.name}
                   </h4>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-1">
+                  <p className={`font-sans text-xs mt-1 truncate ${
+                    isSelected ? 'text-[#F6F2EB]/75' : 'text-[#111111]/70'
+                  }`}>
                     Lead: {lab.inCharge}
                   </p>
                 </div>
@@ -61,52 +67,54 @@ export default function LabsSection() {
           </div>
 
           {/* Detailed Lab Hardware & Specs Card */}
-          <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] rounded-[2px] p-6 shadow-print flex flex-col justify-between">
             <div className="space-y-5">
-              <div className="flex items-start justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-start justify-between border-b-2 border-[#111111] pb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-[2px] bg-[#102D69] text-[#F6F2EB] border border-[#111111]">
                       {activeLab.code}
                     </span>
-                    <span className="text-xs text-slate-400">Lab In-Charge: {activeLab.inCharge}</span>
+                    <span className="font-tech text-xs font-bold uppercase text-[#111111]/70">
+                      IN-CHARGE: {activeLab.inCharge}
+                    </span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-100 mt-1">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] leading-none mt-1">
                     {activeLab.name}
                   </h3>
                 </div>
-                <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <div className="p-2.5 rounded-[2px] bg-[#F6F2EB] text-[#102D69] border-2 border-[#111111]">
                   <Cpu className="w-6 h-6" />
                 </div>
               </div>
 
               <div>
-                <h5 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
-                  <HardDrive className="w-3.5 h-3.5 text-cyan-400" />
-                  Deployed Hardware & Network Rig
+                <h5 className="font-tech text-xs uppercase tracking-wider text-[#102D69] font-bold mb-2 flex items-center gap-1.5">
+                  <HardDrive className="w-4 h-4 text-[#102D69]" />
+                  DEPLOYED HARDWARE &amp; NETWORK RIG
                 </h5>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-300">
+                <div className="p-3.5 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] font-mono text-xs text-[#111111] font-medium">
                   {activeLab.hardware}
                 </div>
               </div>
 
               <div>
-                <h5 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">
-                  Academic & Innovation Mandate
+                <h5 className="font-tech text-xs uppercase tracking-wider text-[#111111] font-bold mb-1.5">
+                  LABORATORY MANDATE &amp; CAPABILITIES
                 </h5>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <p className="font-sans text-xs sm:text-sm text-[#111111]/85 leading-relaxed font-medium">
                   {activeLab.purpose}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800 text-xs">
-                <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80">
-                  <span className="text-slate-500 font-mono text-[10px] block">STUDENT CAPACITY</span>
-                  <span className="font-bold text-slate-200 mt-0.5 block">{activeLab.capacity}</span>
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t-2 border-[#111111] text-xs">
+                <div className="p-3 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111]">
+                  <span className="font-tech text-[10px] font-bold uppercase text-[#111111]/60 block">CAPACITY</span>
+                  <span className="font-tech text-sm font-bold text-[#111111] mt-0.5 block">{activeLab.capacity}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/80">
-                  <span className="text-slate-500 font-mono text-[10px] block">AVAILABILITY</span>
-                  <span className="font-bold text-emerald-400 mt-0.5 block">Open 8:30 AM – 7:30 PM</span>
+                <div className="p-3 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111]">
+                  <span className="font-tech text-[10px] font-bold uppercase text-[#111111]/60 block">FACILITY ACCESS</span>
+                  <span className="font-tech text-sm font-bold text-[#102D69] mt-0.5 block">08:30 AM – 07:30 PM DAILY</span>
                 </div>
               </div>
 

@@ -2,46 +2,92 @@
 
 @layer base {
   :root {
-    --color-paper: #FBF8F3;
-    --color-ink: #121316;
-    --color-cobalt: #0D47A1;
-    --color-emerald: #00796B;
-    --color-amber: #D97706;
+    --paper: #E6DED4;
+    --paper-50: #F6F2EB;
+    --paper-200: #DCD2C6;
+    --ink: #111111;
+    --cobalt: #102D69;
+    --cobalt-light: #204B99;
+    --saffron: #F5B700;
   }
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #0b0f17;
-  color: #e2e8f0;
+  background-color: #E6DED4;
+  color: #111111;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Custom scrollbar */
+.font-heading {
+  font-family: 'Teko', sans-serif;
+}
+
+.font-tech {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Hard Print Brutalist Shadows (Direct from INNOVEX '26) */
+.shadow-print {
+  box-shadow: 4px 4px 0 0 #111111;
+}
+
+.shadow-print-sm {
+  box-shadow: 2px 2px 0 0 #111111;
+}
+
+.shadow-print-cobalt {
+  box-shadow: 4px 4px 0 0 #102D69;
+}
+
+.shadow-print-saffron {
+  box-shadow: 4px 4px 0 0 #F5B700;
+}
+
+/* Tactile Button Pressing Animation */
+.btn-print {
+  border: 2px solid #111111;
+  box-shadow: 4px 4px 0 0 #111111;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-print:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 0 #111111;
+}
+
+.btn-print:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #111111;
+}
+
+/* Mechanical Perforated Stamp Borders */
+.stamp-border {
+  border: 2px dashed #111111;
+}
+
+/* Circuit Reach SVG Animation */
+.circuit-pulse {
+  stroke-dasharray: 6 3;
+  animation: circuitFlow 20s linear infinite;
+}
+
+@keyframes circuitFlow {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* Custom Paper Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #E6DED4;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Circuit lines animation for Branched Tree Menu */
-.circuit-line {
-  stroke-dasharray: 8;
-  animation: dash 30s linear infinite;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: -1000;
-  }
+  background: #111111;
+  border-radius: 2px;
 }

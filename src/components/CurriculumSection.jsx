@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Layers, Search, CheckCircle, FileText } from 'lucide-react';
+import { BookOpen, Layers, Search, FileText } from 'lucide-react';
 import { COURSES_SYLLABI } from '../data/cseData';
 
 export default function CurriculumSection() {
@@ -22,91 +22,92 @@ export default function CurriculumSection() {
   }, [selectedSemester, query]);
 
   return (
-    <section id="curriculum-section" className="py-12 sm:py-16 border-t border-slate-800/80">
+    <section id="curriculum-section" className="py-12 sm:py-16 border-t-2 border-[#111111] bg-[#E6DED4]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <span className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5" />
-              Syllabus & Scheme of Instruction
+            <span className="font-tech text-xs font-bold tracking-widest text-[#102D69] uppercase flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-[#102D69]" />
+              ACADEMIC SCHEME OF INSTRUCTION
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight mt-1">
-              Autonomous CSE Curriculum
+            <h2 className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] tracking-wide uppercase mt-1 leading-none">
+              AUTONOMOUS CSE CURRICULUM
             </h2>
-            <p className="text-sm text-slate-400 max-w-xl mt-1">
-              Industry-aligned credit framework emphasizing systems programming, algorithmic rigor, and cloud architectures.
+            <p className="font-sans text-xs sm:text-sm text-[#111111]/70 max-w-xl mt-2 font-medium">
+              Industry-aligned credit framework focusing on distributed algorithms, compiler design, and cloud infrastructures.
             </p>
           </div>
 
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#111111]/60 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by topic, e.g. 'Kubernetes'..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
+              placeholder="Search syllabus topic, e.g. 'Kubernetes'..."
+              className="w-full pl-9 pr-3 py-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] font-tech text-sm text-[#111111] placeholder-[#111111]/45 focus:outline-none shadow-print-sm"
             />
           </div>
         </div>
 
         {/* Semester Filter Pills */}
         <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
-          {semesters.map((sem) => (
-            <button
-              key={sem}
-              onClick={() => setSelectedSemester(sem)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer ${
-                selectedSemester === sem
-                  ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                  : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-              }`}
-            >
-              {sem}
-            </button>
-          ))}
+          {semesters.map((sem) => {
+            const isSelected = selectedSemester === sem;
+            return (
+              <button
+                key={sem}
+                onClick={() => setSelectedSemester(sem)}
+                className={`px-3.5 py-1.5 rounded-[2px] font-tech text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer border-2 ${
+                  isSelected
+                    ? 'bg-[#102D69] text-[#F6F2EB] border-[#111111] shadow-print-sm -translate-x-px -translate-y-px'
+                    : 'bg-[#F6F2EB] border-[#111111] text-[#111111] hover:bg-[#E6DED4]'
+                }`}
+              >
+                {sem}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Course Grid */}
+        {/* Course Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <div
               key={course.code}
-              className="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-5 transition-all flex flex-col justify-between group"
+              className="bg-[#F6F2EB] border-2 border-[#111111] shadow-print rounded-[2px] p-5 transition-transform hover:-translate-x-px hover:-translate-y-px flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-cyan-400 border border-slate-700">
+                <div className="flex items-center justify-between mb-2 pb-2 border-b-2 border-[#111111]">
+                  <span className="font-mono text-xs font-black px-2 py-0.5 rounded-[2px] bg-[#102D69] text-[#F6F2EB] border border-[#111111]">
                     {course.code}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono text-slate-400">
-                      {course.semester}
-                    </span>
-                    <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 text-amber-400 border border-amber-500/20">
-                      {course.credits} Credits
+                  <div className="flex items-center gap-1.5 font-tech text-xs font-bold uppercase">
+                    <span>{course.semester}</span>
+                    <span className="text-[#102D69] bg-[#F5B700] px-1.5 py-0.2 rounded-[2px] border border-[#111111]">
+                      {course.credits} CREDITS
                     </span>
                   </div>
                 </div>
 
-                <h4 className="text-base font-bold text-slate-100 group-hover:text-cyan-300 transition-colors mb-1">
+                <h4 className="font-tech text-lg font-bold uppercase tracking-wide text-[#111111] mb-1">
                   {course.title}
                 </h4>
 
-                <p className="text-xs text-slate-400 mb-4">
+                <p className="font-tech text-xs font-semibold uppercase text-[#102D69] mb-4">
                   {course.domain}
                 </p>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 block mb-1.5">
-                    Key Syllabus Modules
+                  <span className="font-tech text-xs uppercase tracking-wider text-[#111111]/70 font-bold block mb-1.5">
+                    KEY SYLLABUS TOPICS
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {course.topics.map((t, idx) => (
                       <span
                         key={idx}
-                        className="text-[11px] px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700/60"
+                        className="font-tech text-xs font-semibold px-2 py-0.5 rounded-[2px] bg-[#E6DED4] text-[#111111] border border-[#111111]/30"
                       >
                         {t}
                       </span>
@@ -115,13 +116,13 @@ export default function CurriculumSection() {
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                <span className="flex items-center gap-1.5 text-slate-400">
-                  <FileText className="w-3.5 h-3.5 text-cyan-400" />
-                  Detailed Syllabus PDF
+              <div className="pt-4 mt-4 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs font-bold uppercase">
+                <span className="flex items-center gap-1.5 text-[#111111]">
+                  <FileText className="w-3.5 h-3.5 text-[#102D69]" />
+                  SYLLABUS PDF
                 </span>
-                <span className="text-cyan-400 font-semibold group-hover:underline">
-                  View Syllabus &rarr;
+                <span className="text-[#102D69] underline cursor-pointer">
+                  VIEW SCHEME &rarr;
                 </span>
               </div>
             </div>

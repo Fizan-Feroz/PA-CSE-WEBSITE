@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Shield, Cloud, Terminal, Radio, Sparkles, Edit3 } from 'lucide-react';
+import { Cpu, Shield, Cloud, Terminal, Radio, Sparkles } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 const DOMAIN_ICONS = {
@@ -11,7 +11,7 @@ const DOMAIN_ICONS = {
 };
 
 export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
-  const { domains, isAdmin, openAdminModal } = useDepartmentData();
+  const { domains } = useDepartmentData();
   const [hoveredId, setHoveredId] = useState(null);
   
   const currentActive = hoveredId || activeDomainId || (domains[0] ? domains[0].id : '');
@@ -38,19 +38,8 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
           </h3>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          {isAdmin && (
-            <button
-              onClick={() => openAdminModal('tracks')}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border border-[#111111] shadow-print-sm cursor-pointer"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>Edit Tracks</span>
-            </button>
-          )}
-          <div className="font-tech text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-[2px] bg-[#E6DED4] border-2 border-[#111111] text-[#111111]">
-            AUTONOMOUS SCHEME · {domains.length} TRACKS
-          </div>
+        <div className="font-tech text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-[2px] bg-[#E6DED4] border-2 border-[#111111] text-[#111111] self-start sm:self-auto">
+          AUTONOMOUS SCHEME · {domains.length} TRACKS
         </div>
       </div>
 

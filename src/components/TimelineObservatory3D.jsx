@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Clock, Compass, Eye, Edit3 } from 'lucide-react';
+import { Clock, Compass, Eye } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function TimelineObservatory3D() {
-  const { milestones, isAdmin, openAdminModal } = useDepartmentData();
+  const { milestones } = useDepartmentData();
   const containerRef = useRef(null);
   const [viewMode, setViewMode] = useState('3d'); // '3d' | '2d'
   const [activeMilestoneIndex, setActiveMilestoneIndex] = useState(0);
@@ -281,19 +281,8 @@ export default function TimelineObservatory3D() {
             </p>
           </div>
 
-          {/* Action Tools & View Mode Switcher */}
-          <div className="flex items-center gap-2 self-start md:self-auto">
-            {isAdmin && (
-              <button
-                onClick={() => openAdminModal('timeline')}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>Edit Milestones</span>
-              </button>
-            )}
-
-            <div className="inline-flex rounded-[2px] border-2 border-[#111111] bg-[#F6F2EB] p-1 shadow-print-sm">
+          {/* View Mode Switcher */}
+          <div className="inline-flex rounded-[2px] border-2 border-[#111111] bg-[#F6F2EB] p-1 shadow-print-sm self-start md:self-auto">
               <button
                 onClick={() => setViewMode('3d')}
                 className={`px-3 sm:px-4 py-1.5 font-tech text-xs font-bold uppercase tracking-wider rounded-[2px] transition-all cursor-pointer ${
@@ -315,7 +304,6 @@ export default function TimelineObservatory3D() {
                 2D · CHRONICLE
               </button>
             </div>
-          </div>
         </div>
 
         {/* 3D Observatory View Container */}

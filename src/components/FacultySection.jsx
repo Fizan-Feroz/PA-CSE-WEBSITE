@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Mail, MapPin, Search, Users, Edit3, Plus } from 'lucide-react';
+import { Mail, MapPin, Search, Users } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function FacultySection() {
-  const { faculty, isAdmin, openAdminModal } = useDepartmentData();
+  const { faculty } = useDepartmentData();
   const [activeDepartment, setActiveDepartment] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -49,16 +49,6 @@ export default function FacultySection() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {isAdmin && (
-              <button
-                onClick={() => openAdminModal('faculty')}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer whitespace-nowrap"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add / Edit Faculty</span>
-              </button>
-            )}
-
             {/* Quick in-section search styled like print register */}
             <div className="relative w-full sm:w-72">
               <Search className="w-4 h-4 text-[#111111]/60 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -169,24 +159,13 @@ export default function FacultySection() {
                     <MapPin className="w-3.5 h-3.5 text-[#102D69] shrink-0" />
                     <span className="truncate">{f.office || f.cabin || 'Academic Block A'}</span>
                   </span>
-                  <div className="flex items-center gap-1">
-                    {isAdmin && (
-                      <button
-                        onClick={() => openAdminModal('faculty')}
-                        className="p-1 rounded-[2px] bg-[#F5B700] border border-[#111111] text-[#111111]"
-                        title="Edit in CMS"
-                      >
-                        <Edit3 className="w-3 h-3" />
-                      </button>
-                    )}
-                    <a
-                      href={`mailto:${f.email}`}
-                      className="p-1.5 rounded-[2px] bg-[#E6DED4] hover:bg-[#102D69] hover:text-[#F6F2EB] border border-[#111111] text-[#111111] transition-colors"
-                      title={f.email}
-                    >
-                      <Mail className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
+                  <a
+                    href={`mailto:${f.email}`}
+                    className="p-1.5 rounded-[2px] bg-[#E6DED4] hover:bg-[#102D69] hover:text-[#F6F2EB] border border-[#111111] text-[#111111] transition-colors"
+                    title={f.email}
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                  </a>
                 </div>
 
               </div>

@@ -10,12 +10,12 @@ import ProjectsAndEventsSection from './components/ProjectsAndEventsSection';
 import TimelineObservatory3D from './components/TimelineObservatory3D';
 import { DepartmentDataProvider } from './context/DepartmentDataContext';
 import { useDepartmentData } from './context/DepartmentContextCore';
-import { Search, Compass, Phone, Mail, MapPin, Edit3, Shield } from 'lucide-react';
+import { Search, Compass, Phone, Mail, MapPin } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 function MainAppContent() {
-  const { collegeInfo, labs, isAdmin, openAdminModal } = useDepartmentData();
+  const { collegeInfo, labs, openAdminModal } = useDepartmentData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDomainId, setActiveDomainId] = useState(null);
 
@@ -80,15 +80,6 @@ function MainAppContent() {
               <span className="bg-[#102D69] text-[#F6F2EB] px-2 py-0.5 rounded-[2px] font-mono text-[11px]">
                 {collegeInfo.accreditation?.includes('NBA') ? 'NBA TIER-1' : 'ACCREDITED'}
               </span>
-              {isAdmin && (
-                <button
-                  onClick={() => openAdminModal('general')}
-                  className="bg-[#F5B700] text-[#111111] px-2 py-0.5 rounded-[2px] font-tech font-bold text-[11px] border border-[#111111] flex items-center gap-1 cursor-pointer"
-                >
-                  <Edit3 className="w-3 h-3" />
-                  <span>EDIT HERO</span>
-                </button>
-              )}
             </div>
           </div>
 
@@ -213,19 +204,10 @@ function MainAppContent() {
             {/* Vision */}
             <div className="lg:col-span-5 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px] flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-1">
+                <div className="mb-1">
                   <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
                     DEPARTMENT VISION · PACE MANGALURU
                   </span>
-                  {isAdmin && (
-                    <button
-                      onClick={() => openAdminModal('general')}
-                      className="text-[#102D69] hover:underline font-tech text-xs font-bold uppercase flex items-center gap-1"
-                    >
-                      <Edit3 className="w-3 h-3" />
-                      <span>Edit</span>
-                    </button>
-                  )}
                 </div>
                 <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-2 leading-none">
                   COMPETENT PROFESSIONALS FOR INDUSTRY &amp; SOCIETY
@@ -242,19 +224,10 @@ function MainAppContent() {
 
             {/* Mission */}
             <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px]">
-              <div className="flex items-center justify-between mb-1">
+              <div className="mb-1">
                 <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
                   DEPARTMENT MISSION OBJECTIVES
                 </span>
-                {isAdmin && (
-                  <button
-                    onClick={() => openAdminModal('general')}
-                    className="text-[#102D69] hover:underline font-tech text-xs font-bold uppercase flex items-center gap-1"
-                  >
-                    <Edit3 className="w-3 h-3" />
-                    <span>Edit</span>
-                  </button>
-                )}
               </div>
               <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-3 leading-none">
                 FOUR PILLARS OF ACADEMIC EXCELLENCE
@@ -334,13 +307,7 @@ function MainAppContent() {
             <a href="#faculty-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Faculty</a>
             <a href="#labs-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Laboratories</a>
             <a href="#curriculum-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Syllabus</a>
-            <button 
-              onClick={() => openAdminModal('general')}
-              className="text-[#F5B700] underline cursor-pointer flex items-center gap-1 font-bold"
-            >
-              <Shield className="w-3 h-3" />
-              <span>Admin CMS</span>
-            </button>
+            <a href="#projects-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Projects</a>
           </div>
         </div>
 
@@ -349,31 +316,6 @@ function MainAppContent() {
           <p className="font-mono text-[#F5B700]">Official Department Portal · Print Brutalist Architecture with 3D Astrolabe</p>
         </div>
       </footer>
-
-      {/* Persistent Floating Admin Quick-Access HUD Button */}
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
-        <button
-          onClick={() => openAdminModal('general')}
-          className={`px-3 sm:px-3.5 py-2 rounded-[2px] border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0 transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center gap-2 cursor-pointer ${
-            isAdmin 
-              ? 'bg-[#F5B700] text-[#111111]' 
-              : 'bg-[#102D69] text-[#F6F2EB] hover:bg-[#163A96]'
-          }`}
-          title="Open Admin Control Center (Ctrl+Shift+A)"
-        >
-          {isAdmin ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#111111] animate-ping" />
-              <span>CMS [LIVE]</span>
-            </>
-          ) : (
-            <>
-              <Shield className="w-3.5 h-3.5 text-[#F5B700]" />
-              <span>ADMIN CMD</span>
-            </>
-          )}
-        </button>
-      </div>
 
     </div>
   );

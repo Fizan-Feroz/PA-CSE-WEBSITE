@@ -1,9 +1,9 @@
 import React from 'react';
-import { Rocket, Calendar, MapPin, Edit3, Plus } from 'lucide-react';
+import { Rocket, Calendar, MapPin } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function ProjectsAndEventsSection() {
-  const { projects, events, isAdmin, openAdminModal } = useDepartmentData();
+  const { projects, events } = useDepartmentData();
 
   return (
     <section id="projects-section" className="py-12 sm:py-16 border-t-2 border-[#111111] bg-[#F6F2EB]">
@@ -24,16 +24,6 @@ export default function ProjectsAndEventsSection() {
                 Prototypes engineered by PACE CSE students under ASCII, GLUG PACE, and Embed Club for state &amp; national platforms like KSCST and Smart India Hackathon.
               </p>
             </div>
-
-            {isAdmin && (
-              <button
-                onClick={() => openAdminModal('projects')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer self-start sm:self-auto"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Manage Projects</span>
-              </button>
-            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,19 +64,9 @@ export default function ProjectsAndEventsSection() {
 
                 <div className="pt-3 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs font-bold uppercase">
                   <span className="text-[#102D69] truncate max-w-[140px]">{proj.domain}</span>
-                  {isAdmin ? (
-                    <button
-                      onClick={() => openAdminModal('projects')}
-                      className="text-[#111111] hover:text-[#102D69] flex items-center gap-1 cursor-pointer"
-                    >
-                      <Edit3 className="w-3 h-3" />
-                      <span>Edit</span>
-                    </button>
-                  ) : (
-                    <span className="text-[#111111] underline cursor-pointer">
-                      CASE STUDY &rarr;
-                    </span>
-                  )}
+                  <span className="text-[#111111] underline cursor-pointer">
+                    CASE STUDY &rarr;
+                  </span>
                 </div>
               </div>
             ))}
@@ -105,16 +85,6 @@ export default function ProjectsAndEventsSection() {
                 CONFERENCES, SYMPOSIA &amp; SESSIONS ({events.length})
               </h2>
             </div>
-
-            {isAdmin && (
-              <button
-                onClick={() => openAdminModal('events')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer self-start sm:self-auto"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add / Edit Events</span>
-              </button>
-            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -147,14 +117,6 @@ export default function ProjectsAndEventsSection() {
                     <MapPin className="w-3.5 h-3.5 text-[#102D69] shrink-0" />
                     <span className="truncate">{ev.venue}</span>
                   </span>
-                  {isAdmin && (
-                    <button
-                      onClick={() => openAdminModal('events')}
-                      className="text-[#102D69] font-bold uppercase text-[11px] cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                  )}
                 </div>
               </div>
             ))}

@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Search, Edit3, Plus } from 'lucide-react';
+import { BookOpen, Search } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function CurriculumSection() {
-  const { curriculum, isAdmin, openAdminModal } = useDepartmentData();
+  const { curriculum } = useDepartmentData();
   const [selectedSemester, setSelectedSemester] = useState('All');
   const [query, setQuery] = useState('');
 
@@ -50,16 +50,6 @@ export default function CurriculumSection() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {isAdmin && (
-              <button
-                onClick={() => openAdminModal('curriculum')}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer whitespace-nowrap"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add / Edit Syllabi</span>
-              </button>
-            )}
-
             <div className="relative w-full sm:w-72">
               <Search className="w-4 h-4 text-[#111111]/60 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -145,15 +135,6 @@ export default function CurriculumSection() {
 
                 <div className="pt-4 mt-4 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs font-bold uppercase">
                   <span className="text-[#102D69]">VTU AUTONOMOUS</span>
-                  {isAdmin && (
-                    <button
-                      onClick={() => openAdminModal('curriculum')}
-                      className="text-[#111111] hover:text-[#102D69] flex items-center gap-1 cursor-pointer"
-                    >
-                      <Edit3 className="w-3 h-3" />
-                      <span>Edit</span>
-                    </button>
-                  )}
                 </div>
               </div>
             ))

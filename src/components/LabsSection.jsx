@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Cpu, Server, HardDrive, Edit3 } from 'lucide-react';
+import { Cpu, Server, HardDrive } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function LabsSection() {
-  const { labs, isAdmin, openAdminModal } = useDepartmentData();
+  const { labs } = useDepartmentData();
   const [selectedLabId, setSelectedLabId] = useState(labs[0]?.id || '');
 
   const activeLab = labs.find(l => l.id === selectedLabId) || labs[0];
@@ -27,16 +27,6 @@ export default function LabsSection() {
               Air-gapped penetration testing facilities, high-density GPU model training rigs, and AWS cloud staging clusters.
             </p>
           </div>
-
-          {isAdmin && (
-            <button
-              onClick={() => openAdminModal('labs')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase border-2 border-[#111111] shadow-print-sm cursor-pointer self-start md:self-auto"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>Edit Labs in CMS</span>
-            </button>
-          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

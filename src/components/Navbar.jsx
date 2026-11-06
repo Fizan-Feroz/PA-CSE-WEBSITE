@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Sparkles, Terminal, BookOpen, Users, Cpu, Rocket } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function Navbar({ onOpenSearch }) {
   return (
@@ -36,7 +36,7 @@ export default function Navbar({ onOpenSearch }) {
               <div className="flex items-center gap-2.5 truncate">
                 <Search className="w-4 h-4 text-[#102D69] shrink-0" />
                 <span className="font-tech text-xs sm:text-sm font-semibold tracking-wide text-[#111111]/70 truncate uppercase">
-                  Search faculty, syllabi, labs, CTF...
+                  Search faculty, syllabi, labs, research...
                 </span>
               </div>
               <div className="hidden sm:flex items-center gap-1 pl-2 font-mono text-[10px]">

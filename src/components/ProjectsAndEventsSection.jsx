@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rocket, Calendar, MapPin, Award } from 'lucide-react';
+import { Rocket, Calendar, MapPin } from 'lucide-react';
 import { STUDENT_PROJECTS, UPCOMING_EVENTS } from '../data/cseData';
 
 export default function ProjectsAndEventsSection() {
@@ -12,17 +12,17 @@ export default function ProjectsAndEventsSection() {
           <div className="mb-8">
             <span className="font-tech text-xs font-bold tracking-widest text-[#102D69] uppercase flex items-center gap-1.5">
               <Rocket className="w-4 h-4 text-[#102D69]" />
-              NATIONAL HACKATHONS &amp; PROTOTYPES
+              KSCST RESEARCH, PATENTS &amp; STUDENT PROTOTYPES
             </span>
             <h2 className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] tracking-wide uppercase mt-1 leading-none">
               STUDENT RESEARCH &amp; INNOVATIONS
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#111111]/70 max-w-xl mt-2 font-medium">
-              Prototypes engineered by PACE CSE students for national platforms like INNOVEX '26, KSCST, and smart campus deployments.
+              Prototypes engineered by PACE CSE students under ASCII and GLUG PACE for state &amp; national platforms like KSCST, Smart India Hackathon, and smart campus deployments.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {STUDENT_PROJECTS.map((proj) => (
               <div
                 key={proj.id}
@@ -77,11 +77,11 @@ export default function ProjectsAndEventsSection() {
               DEPARTMENT CALENDAR &amp; CONFERENCES
             </span>
             <h2 className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] tracking-wide uppercase mt-1 leading-none">
-              HACKATHONS, WORKSHOPS &amp; BATTLEGROUNDS
+              CONFERENCES, SYMPOSIA &amp; TECHNICAL SESSIONS
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {UPCOMING_EVENTS.map((ev) => (
               <div
                 key={ev.id}

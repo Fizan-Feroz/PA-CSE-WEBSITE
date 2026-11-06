@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, Cpu, Shield, Cloud, Terminal, Radio, Sparkles } from 'lucide-react';
+import { Cpu, Shield, Cloud, Terminal, Radio, Sparkles } from 'lucide-react';
 import { CSE_DOMAINS } from '../data/cseData';
 
 const DOMAIN_ICONS = {
@@ -26,14 +26,14 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
         <div>
           <span className="font-tech text-xs tracking-widest uppercase font-bold text-[#102D69] flex items-center gap-1.5">
             <Cpu className="w-4 h-4 text-[#102D69]" />
-            INNOVEX CIRCUIT TREE NAVIGATION
+            VTU AUTONOMOUS CURRICULUM CIRCUIT
           </span>
           <h3 className="font-heading text-3xl sm:text-4xl font-bold uppercase tracking-wide text-[#111111] mt-0.5 leading-none">
             FIVE CSE SPECIALIZATION DOMAINS
           </h3>
         </div>
         <div className="font-tech text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-[2px] bg-[#E6DED4] border-2 border-[#111111] text-[#111111] self-start sm:self-auto">
-          SEASON 02 · 5 CORE TRACKS
+          AUTONOMOUS SCHEME · 5 CORE TRACKS
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
 
           {/* Track Nodes List */}
           <div className="flex-1 space-y-1.5 pl-1">
-            {CSE_DOMAINS.map((d, index) => {
+            {CSE_DOMAINS.map((d) => {
               const Icon = DOMAIN_ICONS[d.id] || Sparkles;
               const isSelected = currentActive === d.id;
 

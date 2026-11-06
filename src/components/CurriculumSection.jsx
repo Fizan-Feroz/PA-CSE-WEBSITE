@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Layers, Search, FileText } from 'lucide-react';
+import { BookOpen, Search, FileText } from 'lucide-react';
 import { COURSES_SYLLABI } from '../data/cseData';
 
 export default function CurriculumSection() {

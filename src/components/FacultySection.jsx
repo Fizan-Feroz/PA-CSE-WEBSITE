@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Mail, MapPin, Award, Search, Users } from 'lucide-react';
+import { Mail, MapPin, Search, Users } from 'lucide-react';
 import { FACULTY_MEMBERS } from '../data/cseData';
 
 export default function FacultySection() {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Server, HardDrive, CheckCircle2 } from 'lucide-react';
+import { Cpu, Server, HardDrive } from 'lucide-react';
 import { LABORATORIES } from '../data/cseData';
 
 export default function LabsSection() {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Search, X, User, BookOpen, Cpu, Rocket, Calendar, ArrowRight, 
-  CornerDownLeft, Sparkles, Filter, Hash 
+  CornerDownLeft, Sparkles 
 } from 'lucide-react';
 import { 
   FACULTY_MEMBERS, COURSES_SYLLABI, LABORATORIES, 
@@ -17,11 +17,17 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-      setSelectedIndex(0);
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+        setSelectedIndex(0);
+      }, 30);
+      return () => clearTimeout(timer);
     } else {
-      setQuery('');
-      setActiveCategory('all');
+      const resetTimer = setTimeout(() => {
+        setQuery('');
+        setActiveCategory('all');
+      }, 50);
+      return () => clearTimeout(resetTimer);
     }
   }, [isOpen]);
 
@@ -102,7 +108,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
         subtitle: `${p.team} · ${p.domain}`,
         description: p.description,
         icon: Rocket,
-        badge: 'INNOVEX 26',
+        badge: p.status.includes('KSCST') ? 'KSCST' : (p.status.includes('SIH') ? 'SIH' : 'PROJECT'),
         targetId: 'projects-section',
         keywords: [p.title, p.team, p.domain, p.description, ...p.technologies]
       });
@@ -163,6 +169,13 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
     return scored.map(s => s.item).slice(0, 12);
   }, [allItems, query, activeCategory]);
 
+  const handleSelect = useCallback((item) => {
+    if (onSelectResult) onSelectResult(item);
+    const el = document.getElementById(item.targetId);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    onClose();
+  }, [onSelectResult, onClose]);
+
   useEffect(() => {
     function handleKeyDown(e) {
       if (!isOpen) return;
@@ -185,7 +198,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, filteredResults, selectedIndex]);
+  }, [isOpen, filteredResults, selectedIndex, handleSelect, onClose]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -195,13 +208,6 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
       }
     }
   }, [selectedIndex]);
-
-  function handleSelect(item) {
-    if (onSelectResult) onSelectResult(item);
-    const el = document.getElementById(item.targetId);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-    onClose();
-  }
 
   if (!isOpen) return null;
 
@@ -245,7 +251,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Search faculty, labs, syllabus modules, CTFs, hackathons..."
+            placeholder="Search faculty, labs, curriculum modules, research projects, events..."
             className="flex-1 bg-transparent text-[#111111] placeholder-[#111111]/45 text-sm sm:text-base font-medium focus:outline-none"
           />
           {query && (

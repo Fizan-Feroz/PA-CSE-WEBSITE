@@ -173,7 +173,7 @@ export default function AdminModal() {
                 type="password"
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Enter passcode (default: pace2026)"
+                placeholder="Enter administrator passcode..."
                 className="w-full px-3 py-2.5 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] font-mono text-sm text-center tracking-widest text-[#111111] focus:outline-none shadow-print-sm"
                 autoFocus
               />
@@ -190,9 +190,6 @@ export default function AdminModal() {
                 UNLOCK ADMIN PANEL
               </button>
             </form>
-            <p className="font-tech text-xs text-[#111111]/50 uppercase tracking-widest pt-2">
-              Default passcode: <code className="bg-[#F6F2EB] px-1 py-0.5 border border-[#111111]/30">pace2026</code>
-            </p>
           </div>
         ) : (
           /* Main Admin Tabbed CMS */

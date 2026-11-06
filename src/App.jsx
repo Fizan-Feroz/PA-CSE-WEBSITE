@@ -172,6 +172,17 @@ function MainAppContent() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
             <button
+              onClick={() => {
+                setChatbotDefaultCourse('ALL');
+                setIsChatbotOpen(true);
+              }}
+              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-saffron hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-[#102D69]" />
+              <span>AI SUBJECT TUTOR (CTRL + J)</span>
+            </button>
+
+            <button
               onClick={() => setIsSearchOpen(true)}
               className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
             >
@@ -184,7 +195,7 @@ function MainAppContent() {
               className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
             >
               <Compass className="w-4 h-4 text-[#102D69]" />
-              <span>3D CHRONOLOGY OBSERVATORY</span>
+              <span>3D CHRONOLOGY</span>
             </a>
           </div>
 
@@ -289,7 +300,12 @@ function MainAppContent() {
       <LabsSection />
 
       {/* Autonomous Curriculum & Scheme */}
-      <CurriculumSection />
+      <CurriculumSection 
+        onOpenChatbot={(code) => {
+          setChatbotDefaultCourse(code || 'ALL');
+          setIsChatbotOpen(true);
+        }}
+      />
 
       {/* Student Research, Prototypes & Events */}
       <ProjectsAndEventsSection />
@@ -335,6 +351,25 @@ function MainAppContent() {
           <p className="font-mono text-[#F5B700]">Official Department Portal · Print Brutalist Architecture with 3D Astrolabe</p>
         </div>
       </footer>
+
+      {/* Floating AI Academic Tutor Trigger Dock */}
+      <div className="fixed bottom-5 right-5 z-30">
+        <button
+          onClick={() => {
+            setChatbotDefaultCourse('ALL');
+            setIsChatbotOpen(true);
+          }}
+          className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border-2 border-[#111111] shadow-print font-tech text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center gap-2 hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
+          title="Open AI Academic Assistant (Ctrl+J)"
+        >
+          <Sparkles className="w-4 h-4 text-[#102D69]" />
+          <span className="hidden sm:inline">AI ACADEMIC TUTOR</span>
+          <span className="sm:hidden">AI TUTOR</span>
+          <span className="bg-[#111111] text-[#F6F2EB] px-1 py-0.2 rounded-[2px] font-mono text-[10px]">
+            ^J
+          </span>
+        </button>
+      </div>
 
     </div>
   );

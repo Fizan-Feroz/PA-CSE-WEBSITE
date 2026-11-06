@@ -86,7 +86,7 @@ export function DepartmentDataProvider({ children }) {
       } catch {}
       return { success: true };
     }
-    return { success: false, message: 'Invalid passcode. Default passcode is pace2026' };
+    return { success: false, message: 'Invalid administrator passcode.' };
   }, []);
 
   const logoutAdmin = useCallback(() => {

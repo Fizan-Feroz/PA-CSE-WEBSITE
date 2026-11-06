@@ -40,11 +40,11 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
       actionType: 'open-admin',
       title: 'OPEN DEPARTMENT ADMIN CMS & CUSTOMIZER',
       subtitle: 'Real-time content management panel for faculty, syllabi, labs & settings',
-      description: 'Passcode protected admin suite (default: pace2026) · Shortcut: Ctrl+Shift+A',
+      description: 'Restricted department content management panel · Shortcut: Ctrl+Shift+A',
       icon: Shield,
       badge: 'ADMIN CMD',
       targetId: 'admin-modal',
-      keywords: ['admin', 'cms', 'cmd', 'command', 'settings', 'edit', 'manage', 'customizer', 'control', 'pace2026', 'password']
+      keywords: ['admin', 'cms', 'cmd', 'command', 'settings', 'edit', 'manage', 'customizer', 'control']
     });
 
     // Domains

@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import SearchModal from './components/SearchModal';
+import AdminModal from './components/AdminModal';
 import BranchedDomainTree from './components/BranchedDomainTree';
 import FacultySection from './components/FacultySection';
 import LabsSection from './components/LabsSection';
 import CurriculumSection from './components/CurriculumSection';
 import ProjectsAndEventsSection from './components/ProjectsAndEventsSection';
 import TimelineObservatory3D from './components/TimelineObservatory3D';
-import { COLLEGE_INFO } from './data/cseData';
-import { Search, Compass, Phone, Mail, MapPin } from 'lucide-react';
+import { DepartmentDataProvider } from './context/DepartmentDataContext';
+import { useDepartmentData } from './context/DepartmentContextCore';
+import { Search, Compass, Phone, Mail, MapPin, Edit3, Shield } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export default function App() {
+function MainAppContent() {
+  const { collegeInfo, labs, isAdmin, openAdminModal } = useDepartmentData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDomainId, setActiveDomainId] = useState(null);
 
@@ -24,12 +27,15 @@ export default function App() {
       } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
         e.preventDefault();
         setIsSearchOpen(true);
+      } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        openAdminModal('general');
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [openAdminModal]);
 
   function handleSelectResult(item) {
     if (item.type === 'domain') {
@@ -37,6 +43,10 @@ export default function App() {
       setActiveDomainId(domainId);
     }
   }
+
+  const establishedYear = collegeInfo.established || 2000;
+  const yearsOfExcellence = Math.max(1, CURRENT_YEAR - establishedYear);
+  const labCount = labs ? labs.length : 6;
 
   return (
     <div className="min-h-screen bg-[#E6DED4] text-[#111111] selection:bg-[#102D69] selection:text-[#F6F2EB]">
@@ -48,25 +58,37 @@ export default function App() {
         onSelectResult={handleSelectResult}
       />
 
+      {/* Admin Control Center Modal */}
+      <AdminModal />
+
       {/* Top Navbar */}
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
 
       {/* Poster Hero Section (Print Brutalist Visual Engine with SMIL Orbiting Eye & Spark) */}
-      <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 border-b-2 border-[#111111]">
+      <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20 border-b-2 border-[#111111]">
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* Technical Coordinates & Top Metadata Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-3 border-b-2 border-[#111111]/20 font-tech text-xs tracking-widest uppercase font-bold text-[#111111]/70">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-6 pb-3 border-b-2 border-[#111111]/20 font-tech text-xs tracking-widest uppercase font-bold text-[#111111]/70">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#102D69] animate-ping" />
-              <span>{COLLEGE_INFO.coordinates} · NADUPADAV, MANGALURU</span>
+              <span className="truncate">{collegeInfo.coordinates || '12.85° N · 74.96° E'} · NADUPADAV, MANGALURU</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="hidden sm:inline">ESTD 2000 · VTU BELAGAVI · AICTE APPROVED</span>
-              <span className="bg-[#102D69] text-[#F6F2EB] px-2 py-0.5 rounded-[2px] font-mono">
-                NBA TIER-1
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="hidden sm:inline">ESTD {establishedYear} · VTU BELAGAVI · AICTE APPROVED</span>
+              <span className="bg-[#102D69] text-[#F6F2EB] px-2 py-0.5 rounded-[2px] font-mono text-[11px]">
+                {collegeInfo.accreditation?.includes('NBA') ? 'NBA TIER-1' : 'ACCREDITED'}
               </span>
+              {isAdmin && (
+                <button
+                  onClick={() => openAdminModal('general')}
+                  className="bg-[#F5B700] text-[#111111] px-2 py-0.5 rounded-[2px] font-tech font-bold text-[11px] border border-[#111111] flex items-center gap-1 cursor-pointer"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  <span>EDIT HERO</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -74,18 +96,18 @@ export default function App() {
           <div className="flex justify-center mb-6">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm hover:shadow-print hover:-translate-x-px hover:-translate-y-px transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm hover:shadow-print hover:-translate-x-px hover:-translate-y-px transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
             >
               <Search className="w-4 h-4 text-[#102D69]" />
               <span>LAUNCH CSE SPOTLIGHT SEARCH DIRECTORY</span>
-              <span className="bg-[#111111] text-[#F6F2EB] px-1.5 py-0.2 rounded-[2px] font-mono text-[11px]">
+              <span className="bg-[#111111] text-[#F6F2EB] px-1.5 py-0.2 rounded-[2px] font-mono text-[10px] sm:text-[11px]">
                 CTRL + K
               </span>
             </button>
           </div>
 
           {/* Central Mechanical Eye Graphic with Continuous SMIL Orbits */}
-          <div className="relative mx-auto w-40 h-28 sm:w-48 sm:h-32 mb-4 flex items-center justify-center">
+          <div className="relative mx-auto w-36 h-24 sm:w-48 sm:h-32 mb-4 flex items-center justify-center">
             <svg 
               className="w-full h-full overflow-visible" 
               viewBox="-120 -80 240 160"
@@ -121,12 +143,12 @@ export default function App() {
             </svg>
           </div>
 
-          {/* Giant Brutalist Poster Heading */}
+          {/* Giant Brutalist Poster Heading with Break-Words Protection */}
           <div className="text-center max-w-5xl mx-auto space-y-3">
-            <p className="font-tech text-sm sm:text-base font-bold uppercase tracking-[0.25em] text-[#102D69]">
-              P.A. COLLEGE OF ENGINEERING · NADUPADAV, MANGALURU
+            <p className="font-tech text-xs sm:text-base font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#102D69]">
+              {collegeInfo.name || 'P.A. COLLEGE OF ENGINEERING'} · NADUPADAV, MANGALURU
             </p>
-            <h1 className="font-heading text-5xl sm:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.88] text-[#111111]">
+            <h1 className="font-heading text-4xl sm:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.88] text-[#111111] break-words">
               COMPUTER SCIENCE <br />
               <span className="text-[#102D69] underline decoration-[#F5B700] decoration-4 underline-offset-8">
                 &amp; ENGINEERING
@@ -138,10 +160,10 @@ export default function App() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] font-tech text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
             >
               <Search className="w-4 h-4 text-[#F5B700]" />
               <span>SEARCH DIRECTORY (CTRL + K)</span>
@@ -149,7 +171,7 @@ export default function App() {
 
             <a
               href="#timeline-observatory"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
+              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
             >
               <Compass className="w-4 h-4 text-[#102D69]" />
               <span>3D CHRONOLOGY OBSERVATORY</span>
@@ -157,22 +179,26 @@ export default function App() {
           </div>
 
           {/* Technical Metric Placards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
-            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#102D69] leading-none block">NBA</span>
-              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">TIER-1 ACCREDITED</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-10 sm:mt-12 max-w-4xl mx-auto">
+            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#102D69] leading-none block">NBA</span>
+              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">TIER-1 ACCREDITED</p>
             </div>
-            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#111111] leading-none block">94.8%</span>
-              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">CAMPUS PLACEMENTS</p>
+            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] leading-none block">94.8%</span>
+              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">CAMPUS PLACEMENTS</p>
             </div>
-            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#102D69] leading-none block">06</span>
-              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">SPECIALIZED LABS</p>
+            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#102D69] leading-none block">
+                {labCount < 10 ? `0${labCount}` : labCount}
+              </span>
+              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">SPECIALIZED LABS</p>
             </div>
-            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#111111] leading-none block">25+</span>
-              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">YEARS OF EXCELLENCE</p>
+            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] leading-none block">
+                {yearsOfExcellence}+
+              </span>
+              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">YEARS OF EXCELLENCE</p>
             </div>
           </div>
 
@@ -185,34 +211,56 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Vision */}
-            <div className="lg:col-span-5 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-6 rounded-[2px] flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px] flex flex-col justify-between">
               <div>
-                <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block mb-1">
-                  DEPARTMENT VISION · PACE MANGALURU
-                </span>
-                <h3 className="font-heading text-3xl font-bold uppercase text-[#111111] mb-2 leading-none">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
+                    DEPARTMENT VISION · PACE MANGALURU
+                  </span>
+                  {isAdmin && (
+                    <button
+                      onClick={() => openAdminModal('general')}
+                      className="text-[#102D69] hover:underline font-tech text-xs font-bold uppercase flex items-center gap-1"
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      <span>Edit</span>
+                    </button>
+                  )}
+                </div>
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-2 leading-none">
                   COMPETENT PROFESSIONALS FOR INDUSTRY &amp; SOCIETY
                 </h3>
                 <p className="font-sans text-xs sm:text-sm text-[#111111]/85 font-medium leading-relaxed italic">
-                  "{COLLEGE_INFO.vision}"
+                  "{collegeInfo.vision}"
                 </p>
               </div>
-              <div className="pt-4 mt-4 border-t border-[#111111]/20 flex items-center justify-between text-xs font-tech font-bold uppercase text-[#102D69]">
-                <span>Head of Department: {COLLEGE_INFO.vicePrincipalAndHod}</span>
-                <span className="font-mono text-[#111111]">hod_cs@pace.edu.in</span>
+              <div className="pt-4 mt-4 border-t border-[#111111]/20 flex flex-wrap items-center justify-between gap-2 text-xs font-tech font-bold uppercase text-[#102D69]">
+                <span>Head of Department: {collegeInfo.vicePrincipalAndHod}</span>
+                <span className="font-mono text-[#111111]">{collegeInfo.contact?.hodEmail || 'hod_cs@pace.edu.in'}</span>
               </div>
             </div>
 
             {/* Mission */}
-            <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-6 rounded-[2px]">
-              <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block mb-1">
-                DEPARTMENT MISSION OBJECTIVES
-              </span>
-              <h3 className="font-heading text-3xl font-bold uppercase text-[#111111] mb-3 leading-none">
+            <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
+                  DEPARTMENT MISSION OBJECTIVES
+                </span>
+                {isAdmin && (
+                  <button
+                    onClick={() => openAdminModal('general')}
+                    className="text-[#102D69] hover:underline font-tech text-xs font-bold uppercase flex items-center gap-1"
+                  >
+                    <Edit3 className="w-3 h-3" />
+                    <span>Edit</span>
+                  </button>
+                )}
+              </div>
+              <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-3 leading-none">
                 FOUR PILLARS OF ACADEMIC EXCELLENCE
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {COLLEGE_INFO.mission.map((m, idx) => (
+                {collegeInfo.mission.map((m, idx) => (
                   <div key={idx} className="p-3 bg-[#F6F2EB] border border-[#111111] rounded-[2px] flex gap-2.5 items-start">
                     <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded-[2px] bg-[#102D69] text-[#F6F2EB] shrink-0">
                       M{idx + 1}
@@ -262,35 +310,36 @@ export default function App() {
               DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING
             </p>
             <p className="text-[#F6F2EB]/80 uppercase tracking-wider">
-              P.A. College of Engineering (PACE), Nadupadav, Montepadav Post, Mangaluru - 574153
+              {collegeInfo.name || 'P.A. College of Engineering (PACE)'}, {collegeInfo.campusAddress || 'Nadupadav, Montepadav Post, Mangaluru - 574153'}
             </p>
             <p className="font-mono text-[#F5B700] text-[11px] uppercase">
-              Affiliated to VTU Belagavi · Approved by AICTE New Delhi · Accredited by NBA Tier-1
+              {collegeInfo.affiliation} · {collegeInfo.approvals} · {collegeInfo.accreditation}
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2 text-[#F6F2EB]/70 font-mono text-[11px]">
               <span className="flex items-center gap-1">
-                <Phone className="w-3.5 h-3.5 text-[#F5B700]" /> 0824-2284701 / 02 / 03
+                <Phone className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.contact?.phone || '0824-2284701 / 02 / 03'}
               </span>
               <span className="flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-[#F5B700]" /> hod_cs@pace.edu.in
+                <Mail className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.contact?.hodEmail || 'hod_cs@pace.edu.in'}
               </span>
               <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#F5B700]" /> 12.85° N · 74.96° E
+                <MapPin className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.coordinates || '12.85° N · 74.96° E'}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 font-bold uppercase tracking-wider text-[#F6F2EB]">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 font-bold uppercase tracking-wider text-[#F6F2EB]">
             <a href="#domains-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Tracks</a>
             <a href="#timeline-observatory" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">3D Observatory</a>
             <a href="#faculty-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Faculty</a>
             <a href="#labs-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Laboratories</a>
             <a href="#curriculum-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Syllabus</a>
             <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="text-[#F5B700] underline cursor-pointer"
+              onClick={() => openAdminModal('general')}
+              className="text-[#F5B700] underline cursor-pointer flex items-center gap-1 font-bold"
             >
-              Spotlight Search (Ctrl+K)
+              <Shield className="w-3 h-3" />
+              <span>Admin CMS</span>
             </button>
           </div>
         </div>
@@ -302,5 +351,13 @@ export default function App() {
       </footer>
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <DepartmentDataProvider>
+      <MainAppContent />
+    </DepartmentDataProvider>
   );
 }

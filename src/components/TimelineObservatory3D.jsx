@@ -32,8 +32,8 @@ export default function TimelineObservatory3D() {
     scene.background = new THREE.Color(0xE6DED4); // Warm print paper
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 18, 38);
-    camera.lookAt(0, 2, 0);
+    camera.position.set(0, 22, 40);
+    camera.lookAt(0, 1, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
@@ -76,85 +76,141 @@ export default function TimelineObservatory3D() {
     trackMesh(null, saffronMaterial);
 
     const inkRingMaterial = new THREE.MeshBasicMaterial({
-      color: 0x111111,
-      wireframe: true
+      color: 0x111111
     });
     trackMesh(null, inkRingMaterial);
 
-    // 1. Base Pedestal Ring
-    const baseGeo = new THREE.CylinderGeometry(14, 15, 0.8, 64);
+    const paperMaterial = new THREE.MeshStandardMaterial({
+      color: 0xDCD2C6,
+      roughness: 0.92,
+      metalness: 0.05
+    });
+    trackMesh(null, paperMaterial);
+
+    const dialInlayMaterial = new THREE.MeshBasicMaterial({
+      color: 0x102D69,
+      transparent: true,
+      opacity: 0.45,
+      side: THREE.DoubleSide
+    });
+    trackMesh(null, dialInlayMaterial);
+
+    // 1. Stepped brass pedestal with an inset paper astrolabe dial
+    const BASE_TOP_Y = -3.7;
+    const RING_CENTER_Y = 4.4;
+
+    const baseGeo = new THREE.CylinderGeometry(14.9, 15.3, 1.0, 64);
     trackMesh(baseGeo, null);
     const baseMesh = new THREE.Mesh(baseGeo, brassMaterial);
-    baseMesh.position.y = -4;
+    baseMesh.position.y = BASE_TOP_Y - 0.5;
     astrolabeGroup.add(baseMesh);
 
-    // Base Ink Border Rim
-    const rimGeo = new THREE.TorusGeometry(14.8, 0.15, 16, 64);
+    const dialGeo = new THREE.CircleGeometry(13.35, 64);
+    dialGeo.rotateX(-Math.PI / 2);
+    trackMesh(dialGeo, null);
+    const dialMesh = new THREE.Mesh(dialGeo, paperMaterial);
+    dialMesh.position.y = BASE_TOP_Y + 0.02;
+    astrolabeGroup.add(dialMesh);
+
+    // Ink outline around the paper dial
+    const dialRimGeo = new THREE.TorusGeometry(13.38, 0.05, 8, 96);
+    dialRimGeo.rotateX(Math.PI / 2);
+    trackMesh(dialRimGeo, null);
+    const dialRimMesh = new THREE.Mesh(dialRimGeo, inkRingMaterial);
+    dialRimMesh.position.y = BASE_TOP_Y + 0.03;
+    astrolabeGroup.add(dialRimMesh);
+
+    // Thin cobalt track that carries the milestone studs
+    const trackGeo = new THREE.RingGeometry(10.55, 10.72, 96);
+    trackGeo.rotateX(-Math.PI / 2);
+    trackMesh(trackGeo, null);
+    const trackMeshInlay = new THREE.Mesh(trackGeo, dialInlayMaterial);
+    trackMeshInlay.position.y = BASE_TOP_Y + 0.035;
+    astrolabeGroup.add(trackMeshInlay);
+
+    // Base ink border rim
+    const rimGeo = new THREE.TorusGeometry(14.75, 0.12, 12, 64);
     trackMesh(rimGeo, null);
     rimGeo.rotateX(Math.PI / 2);
     const rimMesh = new THREE.Mesh(rimGeo, inkRingMaterial);
-    rimMesh.position.y = -3.6;
+    rimMesh.position.y = BASE_TOP_Y + 0.02;
     astrolabeGroup.add(rimMesh);
 
-    // 2. Pillars around the base
+    // 2. Cobalt pillars around the outer brass ring
     const numPillars = 12;
+    const PILLAR_RADIUS = 14.15;
+    const PILLAR_HEIGHT = 2.5;
     for (let i = 0; i < numPillars; i++) {
       const angle = (i / numPillars) * Math.PI * 2;
-      const pillarGeo = new THREE.CylinderGeometry(0.25, 0.3, 3, 16);
+      const pillarGeo = new THREE.CylinderGeometry(0.18, 0.24, PILLAR_HEIGHT, 16);
       trackMesh(pillarGeo, null);
       const pillarMesh = new THREE.Mesh(pillarGeo, cobaltMaterial);
-      pillarMesh.position.set(Math.cos(angle) * 13, -2.5, Math.sin(angle) * 13);
+      pillarMesh.position.set(
+        Math.cos(angle) * PILLAR_RADIUS,
+        BASE_TOP_Y + PILLAR_HEIGHT / 2,
+        Math.sin(angle) * PILLAR_RADIUS
+      );
       astrolabeGroup.add(pillarMesh);
 
       // Saffron finial on top of each pillar
-      const ballGeo = new THREE.SphereGeometry(0.45, 16, 16);
+      const ballGeo = new THREE.SphereGeometry(0.38, 16, 16);
       trackMesh(ballGeo, null);
       const ballMesh = new THREE.Mesh(ballGeo, saffronMaterial);
-      ballMesh.position.set(Math.cos(angle) * 13, -1, Math.sin(angle) * 13);
+      ballMesh.position.set(
+        Math.cos(angle) * PILLAR_RADIUS,
+        BASE_TOP_Y + PILLAR_HEIGHT + 0.22,
+        Math.sin(angle) * PILLAR_RADIUS
+      );
       astrolabeGroup.add(ballMesh);
     }
 
-    // 3. Nested Armillary Rings (Astrolabe)
-    const ring1Geo = new THREE.TorusGeometry(9, 0.3, 16, 64);
-    trackMesh(ring1Geo, null);
-    const ring1 = new THREE.Mesh(ring1Geo, brassMaterial);
-    astrolabeGroup.add(ring1);
+    // 3. Armillary rings, raised so they sit above the dial rather than through it
+    const armillaryGroup = new THREE.Group();
+    armillaryGroup.position.y = RING_CENTER_Y;
+    astrolabeGroup.add(armillaryGroup);
 
-    const ring2Geo = new THREE.TorusGeometry(8, 0.25, 16, 64);
-    trackMesh(ring2Geo, null);
-    const ring2 = new THREE.Mesh(ring2Geo, cobaltMaterial);
-    ring2.rotation.x = Math.PI / 4;
-    astrolabeGroup.add(ring2);
+    const ringPivots = [];
+    function addArmillaryRing(radius, tube, material, tiltX, spinPhase) {
+      const pivot = new THREE.Group();
+      pivot.rotation.x = tiltX;
+      const ringGeo = new THREE.TorusGeometry(radius, tube, 16, 96);
+      trackMesh(ringGeo, null);
+      pivot.add(new THREE.Mesh(ringGeo, material));
+      armillaryGroup.add(pivot);
+      ringPivots.push({ pivot, spinPhase });
+    }
 
-    const ring3Geo = new THREE.TorusGeometry(7, 0.2, 16, 64);
-    trackMesh(ring3Geo, null);
-    const ring3 = new THREE.Mesh(ring3Geo, brassMaterial);
-    ring3.rotation.y = Math.PI / 3;
-    astrolabeGroup.add(ring3);
+    addArmillaryRing(7.9, 0.22, brassMaterial, 0, 0);
+    addArmillaryRing(7.1, 0.17, cobaltMaterial, Math.PI / 2.7, Math.PI / 4);
+    addArmillaryRing(6.3, 0.14, brassMaterial, -Math.PI / 2.9, Math.PI / 2);
+    addArmillaryRing(5.6, 0.11, cobaltMaterial, Math.PI / 2 - 0.12, Math.PI / 3);
 
-    // 4. Central Celestial Spark / Academic Core
-    const coreGeo = new THREE.SphereGeometry(2.2, 32, 32);
+    // 4. Central celestial spark / academic core
+    const coreGeo = new THREE.SphereGeometry(1.75, 32, 32);
     trackMesh(coreGeo, null);
     const coreMesh = new THREE.Mesh(coreGeo, saffronMaterial);
-    astrolabeGroup.add(coreMesh);
+    armillaryGroup.add(coreMesh);
 
-    // 5. Orbiting Milestone Nodes along an elevated arc
+    const haloGeo = new THREE.TorusGeometry(2.55, 0.06, 8, 64);
+    haloGeo.rotateX(Math.PI / 2);
+    trackMesh(haloGeo, null);
+    const haloMesh = new THREE.Mesh(haloGeo, inkRingMaterial);
+    armillaryGroup.add(haloMesh);
+
+    // 5. Milestone studs inlaid on the dial track
     const milestoneMeshes = [];
     milestones.forEach((m, idx) => {
-      const count = Math.max(1, milestones.length - 1);
-      const t = idx / count;
-      const angle = Math.PI * 0.15 + t * (Math.PI * 1.7);
-      const radius = 12.5;
+      const count = Math.max(1, milestones.length);
+      const angle = Math.PI / 2 + (idx / count) * Math.PI * 2;
+      const radius = 10.62;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      const y = Math.sin(t * Math.PI) * 4;
 
-      const nodeGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.35, 32);
+      const nodeGeo = new THREE.CylinderGeometry(0.68, 0.68, 0.26, 32);
       trackMesh(nodeGeo, null);
       const nodeMat = idx === safeIndex ? saffronMaterial : brassMaterial;
       const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
-      nodeMesh.position.set(x, y, z);
-      nodeMesh.rotation.x = Math.PI / 6;
+      nodeMesh.position.set(x, BASE_TOP_Y + 0.16, z);
       astrolabeGroup.add(nodeMesh);
       milestoneMeshes.push(nodeMesh);
     });
@@ -218,15 +274,22 @@ export default function TimelineObservatory3D() {
         astrolabeGroup.rotation.y += 0.0025;
       }
 
-      // Internal rings counter-rotation
-      ring1.rotation.z = elapsed * 0.15;
-      ring2.rotation.y = elapsed * 0.2;
-      ring3.rotation.x = elapsed * 0.18;
+      // Internal rings counter-rotation around the shared celestial center
+      if (ringPivots[0]) {
+        ringPivots[0].pivot.rotation.y = Math.sin(elapsed * 0.35) * 0.22;
+      }
+      ringPivots.slice(1).forEach(({ pivot, spinPhase }) => {
+        pivot.rotation.y = elapsed * 0.16 + spinPhase;
+      });
 
-      // Pulse active milestone disc
+      if (haloMesh) {
+        haloMesh.rotation.z = elapsed * 0.25;
+      }
+
+      // Pulse active milestone stud
       if (milestoneMeshes[safeIndex]) {
-        const s = 1.0 + Math.sin(elapsed * 4) * 0.08;
-        milestoneMeshes[safeIndex].scale.set(s, s, s);
+        const s = 1.0 + Math.sin(elapsed * 4) * 0.1;
+        milestoneMeshes[safeIndex].scale.set(s, 1, s);
       }
 
       renderer.render(scene, camera);

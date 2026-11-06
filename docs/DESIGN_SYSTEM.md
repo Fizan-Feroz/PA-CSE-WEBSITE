@@ -100,8 +100,8 @@ The SVG circuit lines use precise cubic-like arc calculations:
 * **Canvas Ratio**: Responsive width with fixed height (480px) and camera FOV of 45°.
 * **Coordinate Space**:
   * Origin `(0, 0, 0)` centered at the celestial core.
-  * Pedestal base at `y = -4`.
-  * Camera position `(0, 18, 38)` looking at `(0, 2, 0)`.
+  * Pedestal dial top at `y = -3.7`, armillary center at `y = 4.4`.
+  * Camera position `(0, 22, 40)` looking at `(0, 1, 0)`.
 * **Lighting Model**:
   * Warm ambient light (`0xffffff`, intensity `1.2`).
   * Sun directional key light (`0xfffaed`, intensity `2.0`, positioned at `15, 30, 20`).

@@ -135,7 +135,7 @@ Sorting is purely descending by `score`, sliced to the top 12 results for zero l
 
 The 3D Astrolabe in [`src/components/TimelineObservatory3D.jsx`](file:///d:/Projects/PA-CSE-WEBSITE/src/components/TimelineObservatory3D.jsx) uses:
 - Canvas background: `0xE6DED4` (Warm print paper)
-- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 18, 38)` looking at `(0, 2, 0)`
+- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 22, 40)` looking at `(0, 1, 0)`
 - Materials:
   - Brass Gold (`0xC5A059`, roughness 0.3, metalness 0.8)
   - Heritage Cobalt (`0x102D69`, roughness 0.4, metalness 0.6)

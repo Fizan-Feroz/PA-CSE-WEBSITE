@@ -117,7 +117,7 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
                       isSelected ? 'text-[#F5B700]' : 'text-[#102D69]'
                     }`} />
                     <span className="font-tech text-sm font-bold uppercase tracking-wider truncate">
-                      {d.shortTitle}
+                      {d.shortName || d.name}
                     </span>
                   </div>
                   <span className={`font-mono text-xs font-black px-1.5 py-0.2 rounded-[2px] ml-2 shrink-0 border ${
@@ -148,11 +148,11 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
                         TRACK {domain.code}
                       </span>
                       <span className="font-tech font-bold text-xs uppercase text-[#111111]/70">
-                        LEAD: {domain.leadFaculty}
+                        HEAD: {domain.head}
                       </span>
                     </div>
                     <h4 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] leading-none mt-1">
-                      {domain.title}
+                      {domain.name}
                     </h4>
                   </div>
                   <div className="p-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] text-[#102D69] shrink-0">
@@ -161,21 +161,21 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
                 </div>
 
                 <p className="font-sans text-xs sm:text-sm text-[#111111]/80 leading-relaxed font-medium">
-                  {domain.description}
+                  {domain.summary}
                 </p>
 
                 {/* Core Curriculum Modules */}
                 <div>
                   <span className="font-tech text-xs uppercase tracking-wider text-[#102D69] font-bold block mb-1.5">
-                    CORE SYLLABUS MODULES & SUBJECTS
+                    CORE TECHNICAL SKILLS &amp; STACK ({domain.coursesCount} COURSES)
                   </span>
                   <div className="flex flex-wrap gap-1.5">
-                    {domain.courses.map((c, i) => (
+                    {(domain.skills || []).map((skill, i) => (
                       <span 
                         key={i}
                         className="font-tech text-xs font-semibold px-2.5 py-1 rounded-[2px] bg-[#F6F2EB] border border-[#111111] text-[#111111]"
                       >
-                        {c}
+                        {skill}
                       </span>
                     ))}
                   </div>
@@ -188,7 +188,7 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
                       AFFILIATED RESEARCH LABS
                     </span>
                     <ul className="space-y-1 font-sans text-xs text-[#111111]/80">
-                      {domain.labs.map((l, i) => (
+                      {(domain.labs || []).map((l, i) => (
                         <li key={i} className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-[1px] bg-[#102D69] shrink-0" />
                           <span className="font-medium">{l}</span>
@@ -199,16 +199,11 @@ export default function BranchedDomainTree({ activeDomainId, onSelectDomain }) {
 
                   <div>
                     <span className="font-tech text-xs uppercase tracking-wider text-[#111111] font-bold block mb-1">
-                      DOMAIN ACHIEVEMENTS
+                      FEATURED CURRICULUM MODULE
                     </span>
-                    <ul className="space-y-1 font-sans text-xs text-[#111111]/80">
-                      {domain.highlights.map((h, i) => (
-                        <li key={i} className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-[1px] bg-[#F5B700] border border-[#111111] shrink-0" />
-                          <span className="font-medium">{h}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="font-sans text-xs text-[#111111]/90 font-semibold p-2.5 bg-[#F6F2EB] border border-[#111111] rounded-[2px] leading-relaxed">
+                      {domain.featuredCourse}
+                    </div>
                   </div>
                 </div>
 

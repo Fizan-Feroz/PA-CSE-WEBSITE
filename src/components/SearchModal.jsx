@@ -40,13 +40,13 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
         id: `domain-${d.id}`,
         category: 'Domains',
         type: 'domain',
-        title: d.title,
-        subtitle: `Track ${d.code} · Lead: ${d.leadFaculty}`,
-        description: d.description,
+        title: d.name,
+        subtitle: `Track ${d.code} · Lead: ${d.head}`,
+        description: d.summary,
         icon: Sparkles,
         badge: `TRACK ${d.code}`,
         targetId: `domain-${d.id}`,
-        keywords: [d.title, d.shortTitle, d.leadFaculty, ...d.courses, ...d.labs]
+        keywords: [d.name, d.shortName, d.head, ...(d.skills || []), ...(d.labs || [])]
       });
     });
 
@@ -57,12 +57,12 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
         category: 'Faculty',
         type: 'faculty',
         title: f.name,
-        subtitle: `${f.designation} · ${f.cabin}`,
+        subtitle: `${f.designation} · ${f.office || f.cabin || 'Academic Block A'}`,
         description: f.specialization,
         icon: User,
         badge: f.department.toUpperCase(),
         targetId: 'faculty-section',
-        keywords: [f.name, f.designation, f.specialization, f.department, f.cabin, ...f.tags]
+        keywords: [f.name, f.designation, f.specialization, f.department, f.office || '', ...(f.tags || [])]
       });
     });
 

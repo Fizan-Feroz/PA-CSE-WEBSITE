@@ -98,11 +98,23 @@ export default function FacultySection() {
               >
                 <div>
                   <div className="flex items-start gap-4 mb-4">
-                    <img
-                      src={faculty.image}
-                      alt={faculty.name}
-                      className="size-16 rounded-[2px] object-cover border-2 border-[#111111] shrink-0 shadow-print-sm"
-                    />
+                    {faculty.image ? (
+                      <img
+                        src={faculty.image}
+                        alt={faculty.name}
+                        className="size-16 rounded-[2px] object-cover border-2 border-[#111111] shrink-0 shadow-print-sm"
+                      />
+                    ) : (
+                      <div className="size-16 rounded-[2px] bg-[#102D69] text-[#F6F2EB] border-2 border-[#111111] shrink-0 shadow-print-sm flex items-center justify-center font-heading text-2xl font-bold tracking-wider">
+                        {faculty.name
+                          .replace(/^(Dr\.|Prof\.)\s*/, '')
+                          .split(' ')
+                          .filter(Boolean)
+                          .map(n => n[0])
+                          .slice(0, 2)
+                          .join('')}
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 mb-1">
                         <span className="font-tech text-[10px] font-bold uppercase px-1.5 py-0.2 rounded-[2px] bg-[#102D69] text-[#F6F2EB] border border-[#111111]">
@@ -141,7 +153,7 @@ export default function FacultySection() {
                 <div className="pt-3 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs">
                   <span className="flex items-center gap-1.5 text-[#111111] font-semibold truncate">
                     <MapPin className="w-3.5 h-3.5 text-[#102D69] shrink-0" />
-                    <span className="truncate">{faculty.cabin}</span>
+                    <span className="truncate">{faculty.office || faculty.cabin || 'Academic Block A'}</span>
                   </span>
                   <a
                     href={`mailto:${faculty.email}`}

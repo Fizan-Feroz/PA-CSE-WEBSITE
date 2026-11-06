@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Search, Menu, X, Shield, Sparkles, ExternalLink } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
-export default function Navbar({ onOpenSearch }) {
+export default function Navbar({ onOpenSearch, onOpenChatbot }) {
   const { collegeInfo, announcement, openAdminModal } = useDepartmentData();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const clickCountRef = useRef(0);
@@ -125,8 +125,20 @@ export default function Navbar({ onOpenSearch }) {
               </a>
             </nav>
 
-            {/* Actions: Search Button on mobile + Hamburger Toggle */}
+            {/* Actions: AI Tutor + Search Button on mobile + Hamburger Toggle */}
             <div className="flex items-center gap-2">
+              <button
+                onClick={onOpenChatbot}
+                className="p-1.5 sm:px-3 sm:py-1.5 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                title="Open AI Academic Tutor (Ctrl+J)"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#102D69]" />
+                <span className="hidden sm:inline">AI TUTOR</span>
+                <span className="hidden md:inline-block font-mono text-[9px] px-1 rounded-[2px] bg-[#111111] text-[#F6F2EB]">
+                  ^J
+                </span>
+              </button>
+
               <button
                 onClick={onOpenSearch}
                 className="p-1.5 sm:p-2 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
@@ -206,7 +218,18 @@ export default function Navbar({ onOpenSearch }) {
               </a>
             </nav>
 
-            <div className="mt-4 pt-3 border-t border-[#111111]/20">
+            <div className="mt-4 pt-3 border-t border-[#111111]/20 space-y-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenChatbot();
+                }}
+                className="w-full py-2.5 rounded-[2px] bg-[#F5B700] text-[#111111] font-tech text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 border border-[#111111] shadow-print-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#102D69]" />
+                <span>Launch AI Academic Tutor (Ctrl+J)</span>
+              </button>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

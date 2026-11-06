@@ -30,11 +30,11 @@ export const COLLEGE_INFO = {
     'To foster computing skills with an emphasis on professional competency, interpersonal development, and ethics.'
   ],
   associations: [
-    { name: 'ASCII', fullName: 'Association of Computer Science Students Innovative Intellectuals' },
-    { name: 'GLUG PACE', fullName: 'GNU/Linux Users Group PACE' },
-    { name: 'IEEE Student Branch', fullName: 'IEEE PACE Student Chapter' },
-    { name: 'CSI Chapter', fullName: 'Computer Society of India Institutional Chapter' },
-    { name: 'Embed Club', fullName: 'Embedded Systems & IoT Innovation Club' }
+    { name: 'ASCII', fullName: 'Association of Computer Science Students Innovative Intellectuals (@ascii_pace)' },
+    { name: 'GLUG PACE', fullName: 'GNU/Linux Users Group PACE (@glugpace · FSMK Chapter)' },
+    { name: 'Embed Club', fullName: 'Embedded Systems & Hardware Innovation Community (@embedclub)' },
+    { name: 'IEEE Student Branch', fullName: 'IEEE PACE Student Chapter (IEEE Mangalore Subsection)' },
+    { name: 'CSI Chapter', fullName: 'Computer Society of India Institutional Chapter' }
   ]
 };
 
@@ -357,15 +357,24 @@ export const COURSES_SYLLABI = [
 export const STUDENT_PROJECTS = [
   {
     id: 'proj-1',
-    title: 'AuraNet: Decentralized Disaster Mesh Communication Network',
-    team: 'ASCII Student Innovation Cell',
-    domain: 'Internet of Things & Edge Systems',
-    status: 'Smart India Hackathon Finalist & KSCST Grantee',
-    description: 'Off-grid emergency communications system using LoRa peer-to-peer radio relaying coordinates and medical triage telemetry during cellular outages.',
-    technologies: ['ESP32', 'LoRa SX1262', 'React PWA', 'WebSockets', 'SQLite Embedded']
+    title: 'MedhaDrishti AI: Retinal Pathological Diagnostic Assistant',
+    team: 'PACE AI Research Cohort',
+    domain: 'Artificial Intelligence & Computer Vision',
+    status: 'Third Place @ MedhaDrishti National AI Hackathon',
+    description: 'Deep convolutional network for early diabetic retinopathy and glaucoma screening from fundus photography, mentored under the PACE VTU Research Centre.',
+    technologies: ['PyTorch', 'ResNet-50', 'OpenCV', 'FastAPI', 'Flutter Mobile']
   },
   {
     id: 'proj-2',
+    title: 'AuraNet: Decentralized Disaster Mesh Communication Network',
+    team: 'Embed Club & ASCII PACE',
+    domain: 'Internet of Things & Edge Systems',
+    status: 'Smart India Hackathon Finalist & KSCST Grantee',
+    description: 'Off-grid emergency communications system using LoRa peer-to-peer radio relaying coordinates and medical triage telemetry during cellular outages.',
+    technologies: ['ESP32', 'LoRa SX1262', 'React PWA', 'WebSockets', 'FreeRTOS']
+  },
+  {
+    id: 'proj-3',
     title: 'DeepShield: Real-time Audio & Video Synthetic Media Sentinel',
     team: 'SentinelX Research Group',
     domain: 'Cybersecurity & Machine Learning',
@@ -374,57 +383,48 @@ export const STUDENT_PROJECTS = [
     technologies: ['PyTorch', 'FastAPI', 'ONNX Runtime', 'WebExtension API', 'OpenCV']
   },
   {
-    id: 'proj-3',
-    title: 'CampusPulse: AI-Powered Smart Campus Energy & Classroom Analytics',
-    team: 'PACE Green Campus Team',
+    id: 'proj-4',
+    title: 'CampusPulse: Smart Campus Energy & Classroom Analytics',
+    team: 'PACE Green Campus Initiative',
     domain: 'Artificial Intelligence & IoT',
     status: 'Operational in PACE Academic Block A',
     description: 'Computer vision camera nodes tracking room occupancy to dynamically regulate HVAC cooling and illumination, achieving 34% energy savings.',
     technologies: ['YOLOv8', 'Edge TPU', 'MQTT', 'InfluxDB', 'Grafana Dashboard']
-  },
-  {
-    id: 'proj-4',
-    title: 'MedChain: Decentralized Patient Health Records Ledger',
-    team: 'PACE ICSB Lab Cohort',
-    domain: 'Blockchain & Secure Systems',
-    status: 'Best Research Project Award @ PACE Annual Symposium',
-    description: 'Zero-knowledge authenticated electronic health record system allowing patients to grant temporary, auditable cryptographic consent to hospitals.',
-    technologies: ['Solidity', 'Ethereum L2', 'IPFS', 'Next.js', 'Ethers.js']
   }
 ];
 
 export const UPCOMING_EVENTS = [
   {
     id: 'ev-1',
-    title: 'NCETCIS: National Conference on Emerging Trends in Computing & Intelligent Systems',
-    date: 'Nov 20–21, 2026',
-    venue: 'PACE Central Auditorium & Seminar Hall',
-    type: 'National Conference',
-    description: 'Flagship academic symposium featuring peer-reviewed paper presentations, keynote talks by IISc & NITK professors, and technical research panels.'
+    title: 'TECHNIX 2026: Annual Inter-Collegiate Technical Symposium',
+    date: 'Dec 04–05, 2026',
+    venue: 'PACE Central Auditorium & CSE Computer Labs',
+    type: 'ASCII Flagship Fest',
+    description: 'Flagship departmental symposium organized by ASCII (@ascii_pace) featuring Code War, Web Sculpt, Bug Hunting relays, and Mock Placement drives.'
   },
   {
     id: 'ev-2',
-    title: 'GLUG PACE: Hands-on Workshop on Linux Kernel & Systems Programming',
-    date: 'Nov 12, 2026',
-    venue: 'GLUG Open Source Lab (LAB-105)',
-    type: 'Hands-on Workshop',
-    description: 'Intensive full-day workshop covering Linux kernel modules, system calls, memory management internals, and contributing to upstream open-source projects.'
+    title: 'InnoV8rix X HackSummit: 24-Hour National Hackathon',
+    date: 'Nov 27–28, 2026',
+    venue: 'GLUG Open Source Lab (LAB-105) & Campus Hub',
+    type: 'National Hackathon',
+    description: 'Flagship open-source hackathon organized by GLUG PACE (@glugpace) in association with FSMK & IEEE Mangalore Subsection, focusing on AI and FOSS tooling.'
   },
   {
     id: 'ev-3',
-    title: 'ASCII TechFest: Annual Inter-Collegiate CSE Symposium & Code Sprint',
-    date: 'Dec 05, 2026',
-    venue: 'Academic Block A & Department Labs',
-    type: 'Technical Symposium',
-    description: 'Flagship departmental fest organized by ASCII featuring algorithmic code sprints, technical paper presentations, UI/UX design challenges, and debugging relays.'
+    title: 'SPARK: Multi-Disciplinary Departmental Project Exhibition',
+    date: 'Nov 18, 2026',
+    venue: 'Academic Block A Ground Foyer',
+    type: 'Project Exhibition',
+    description: 'Annual project showcase and poster competition presenting KSCST-funded research, Embed Club hardware prototypes, and final-year capstone solutions.'
   },
   {
     id: 'ev-4',
-    title: 'PACE CTF: Annual Inter-Collegiate Cyber Defense Challenge',
-    date: 'Dec 18, 2026',
-    venue: 'Cyber SOC Range (LAB-204)',
-    type: 'Cyber Competition',
-    description: '12-hour jeopardy-style cybersecurity competition covering web exploitation, cryptography, reverse engineering, and digital forensics.'
+    title: 'FSMK & GLUG PACE: Hands-on Linux Kernel & Systems Drive',
+    date: 'Nov 12, 2026',
+    venue: 'GLUG Open Source Lab (LAB-105)',
+    type: 'Hands-on Workshop',
+    description: 'Full-day workshop on Linux kernel compilation, device drivers, Free Software Movement Karnataka philosophy, and upstream open-source contribution.'
   }
 ];
 

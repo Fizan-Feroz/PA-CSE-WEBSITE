@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import SearchModal from './components/SearchModal';
 import AdminModal from './components/AdminModal';
+import AcademicChatbotModal from './components/AcademicChatbotModal';
 import BranchedDomainTree from './components/BranchedDomainTree';
 import FacultySection from './components/FacultySection';
 import LabsSection from './components/LabsSection';
@@ -10,13 +11,15 @@ import ProjectsAndEventsSection from './components/ProjectsAndEventsSection';
 import TimelineObservatory3D from './components/TimelineObservatory3D';
 import { DepartmentDataProvider } from './context/DepartmentDataContext';
 import { useDepartmentData } from './context/DepartmentContextCore';
-import { Search, Compass, Phone, Mail, MapPin } from 'lucide-react';
+import { Search, Compass, Phone, Mail, MapPin, Sparkles } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 function MainAppContent() {
   const { collegeInfo, labs, openAdminModal } = useDepartmentData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [chatbotDefaultCourse, setChatbotDefaultCourse] = useState('ALL');
   const [activeDomainId, setActiveDomainId] = useState(null);
 
   useEffect(() => {
@@ -24,6 +27,9 @@ function MainAppContent() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setIsSearchOpen(prev => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'j' || e.key === 'J')) {
+        e.preventDefault();
+        setIsChatbotOpen(prev => !prev);
       } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
         e.preventDefault();
         setIsSearchOpen(true);
@@ -58,11 +64,24 @@ function MainAppContent() {
         onSelectResult={handleSelectResult}
       />
 
+      {/* Academic RAG Subject Chatbot Modal */}
+      <AcademicChatbotModal
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        defaultCourse={chatbotDefaultCourse}
+      />
+
       {/* Admin Control Center Modal */}
       <AdminModal />
 
       {/* Top Navbar */}
-      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
+      <Navbar 
+        onOpenSearch={() => setIsSearchOpen(true)} 
+        onOpenChatbot={() => {
+          setChatbotDefaultCourse('ALL');
+          setIsChatbotOpen(true);
+        }}
+      />
 
       {/* Poster Hero Section (Print Brutalist Visual Engine with SMIL Orbiting Eye & Spark) */}
       <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20 border-b-2 border-[#111111]">

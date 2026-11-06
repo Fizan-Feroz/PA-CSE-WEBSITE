@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, Search, Sparkles } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
-export default function CurriculumSection() {
+export default function CurriculumSection({ onOpenChatbot }) {
   const { curriculum } = useDepartmentData();
   const [selectedSemester, setSelectedSemester] = useState('All');
   const [query, setQuery] = useState('');
@@ -133,8 +133,18 @@ export default function CurriculumSection() {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs font-bold uppercase">
+                <div className="pt-4 mt-4 border-t-2 border-[#111111] flex items-center justify-between font-tech text-xs font-bold uppercase gap-2">
                   <span className="text-[#102D69]">VTU AUTONOMOUS</span>
+                  {onOpenChatbot && (
+                    <button
+                      onClick={() => onOpenChatbot(course.code)}
+                      className="px-2.5 py-1 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border border-[#111111] shadow-print-sm flex items-center gap-1 cursor-pointer transition-all hover:-translate-x-px hover:-translate-y-px"
+                      title={`Ask AI Tutor about ${course.code}`}
+                    >
+                      <Sparkles className="w-3 h-3 text-[#102D69]" />
+                      <span>ASK AI TUTOR</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ))

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Search, X, User, BookOpen, Cpu, Rocket, Calendar, ArrowRight, 
-  CornerDownLeft, Sparkles 
+  CornerDownLeft, Sparkles, Shield
 } from 'lucide-react';
 import { useDepartmentData } from '../context/DepartmentContextCore';
 
 export default function SearchModal({ isOpen, onClose, onSelectResult }) {
-  const { domains, faculty, curriculum, labs, projects, events } = useDepartmentData();
+  const { domains, faculty, curriculum, labs, projects, events, openAdminModal } = useDepartmentData();
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -31,6 +31,21 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
 
   const allItems = useMemo(() => {
     const list = [];
+
+    // Administrative Command Palette Action
+    list.push({
+      id: 'cmd-admin-cms',
+      category: 'Commands',
+      type: 'action',
+      actionType: 'open-admin',
+      title: 'OPEN DEPARTMENT ADMIN CMS & CUSTOMIZER',
+      subtitle: 'Real-time content management panel for faculty, syllabi, labs & settings',
+      description: 'Passcode protected admin suite (default: pace2026) · Shortcut: Ctrl+Shift+A',
+      icon: Shield,
+      badge: 'ADMIN CMD',
+      targetId: 'admin-modal',
+      keywords: ['admin', 'cms', 'cmd', 'command', 'settings', 'edit', 'manage', 'customizer', 'control', 'pace2026', 'password']
+    });
 
     // Domains
     domains.forEach(d => {
@@ -184,6 +199,10 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
   const handleSelect = useCallback((item) => {
     if (!item) return;
     onClose();
+    if (item.actionType === 'open-admin') {
+      openAdminModal('general');
+      return;
+    }
     if (onSelectResult) {
       onSelectResult(item);
     }
@@ -191,7 +210,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [onClose, onSelectResult]);
+  }, [onClose, onSelectResult, openAdminModal]);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -222,6 +241,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
 
   const categories = [
     { id: 'all', label: 'ALL ENTRIES' },
+    { id: 'commands', label: 'COMMANDS' },
     { id: 'domains', label: '5 TRACKS' },
     { id: 'faculty', label: 'FACULTY' },
     { id: 'courses', label: 'SYLLABUS' },
@@ -265,7 +285,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Search faculty, labs, curriculum modules, research projects, events..."
+            placeholder="Search faculty, labs, curriculum modules, research projects, events, or type 'admin'..."
             className="flex-1 bg-transparent text-[#111111] placeholder-[#111111]/45 text-sm sm:text-base font-medium focus:outline-none"
           />
           {query && (
@@ -310,7 +330,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
             <div className="py-12 text-center text-[#111111]/60">
               <p className="font-tech text-base font-bold uppercase tracking-wider">NO MATCHES FOUND FOR "{query}"</p>
               <p className="text-xs font-sans mt-1 text-[#111111]/50">
-                Try searching for "Sharmila", "Kubernetes", "Deep Learning", "Cyber Range", or "21CS701"
+                Try searching for "admin", "Sharmila", "Kubernetes", "Deep Learning", or "21CS701"
               </p>
             </div>
           ) : (

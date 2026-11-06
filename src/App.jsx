@@ -350,6 +350,31 @@ function MainAppContent() {
         </div>
       </footer>
 
+      {/* Persistent Floating Admin Quick-Access HUD Button */}
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
+        <button
+          onClick={() => openAdminModal('general')}
+          className={`px-3 sm:px-3.5 py-2 rounded-[2px] border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0 active:translate-y-0 transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center gap-2 cursor-pointer ${
+            isAdmin 
+              ? 'bg-[#F5B700] text-[#111111]' 
+              : 'bg-[#102D69] text-[#F6F2EB] hover:bg-[#163A96]'
+          }`}
+          title="Open Admin Control Center (Ctrl+Shift+A)"
+        >
+          {isAdmin ? (
+            <>
+              <span className="w-2 h-2 rounded-full bg-[#111111] animate-ping" />
+              <span>CMS [LIVE]</span>
+            </>
+          ) : (
+            <>
+              <Shield className="w-3.5 h-3.5 text-[#F5B700]" />
+              <span>ADMIN CMD</span>
+            </>
+          )}
+        </button>
+      </div>
+
     </div>
   );
 }

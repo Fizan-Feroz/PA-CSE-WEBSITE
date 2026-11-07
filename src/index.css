@@ -80,6 +80,21 @@ body {
   }
 }
 
+/* Five-second auto-cycle countdown */
+.auto-cycle-progress {
+  transform-origin: left center;
+  animation: autoCycleProgress 5s linear forwards;
+}
+
+@keyframes autoCycleProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Custom Paper Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

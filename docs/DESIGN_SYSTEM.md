@@ -97,13 +97,18 @@ The SVG circuit lines use precise cubic-like arc calculations:
 
 ## 6. Three.js 3D WebGL Standards (`TimelineObservatory3D`)
 
-* **Canvas Ratio**: Responsive width with fixed height (480px) and camera FOV of 45°.
+* **Stage**: Full-bleed, edge-to-edge chronology stage (540px mobile / 600px tablet / 640px desktop) with ink border top and bottom. The WebGL canvas is transparent over a crossfading era backdrop (archival paper → blueprint blue → dusk → cobalt night).
 * **Coordinate Space**:
   * Origin `(0, 0, 0)` centered at the celestial core.
-  * Pedestal dial top at `y = -3.7`, armillary center at `y = 4.4`.
-  * Camera position `(0, 22, 40)` looking at `(0, 1, 0)`.
+  * Pedestal dial top at `y = -3.7`; orbital medallion ring at `y = 0.9`, radius `11.2`; armillary center at `y = 4.4`.
+  * Camera position `(0, 21, 39)` looking at `(0, 2, 0)`, FOV 45°.
+* **Scene Elements**:
+  * Canvas-textured paper dial with engraved milestone years, tick ring, compass rose and orbit inlay.
+  * Striped cobalt/saffron gnomon column, four armillary rings and a cobalt core.
+  * Eight brass/paper medallions with one active saffron face, additive glow, saffron stem and projected HTML year label.
+  * Ambient dust/star points, real shadows and an era-reactive lighting palette.
 * **Lighting Model**:
-  * Warm ambient light (`0xffffff`, intensity `1.2`).
-  * Sun directional key light (`0xfffaed`, intensity `2.0`, positioned at `15, 30, 20`).
-  * Cobalt fill light (`0x102D69`, intensity `1.5`, positioned at `-15, -10, -20`).
-* **Interaction**: Mouse drag rotation bounded on the X-axis between `-0.4` and `0.6` radians; continuous slow Y-axis drift (`0.003` rad/frame).
+  * Era-defined ambient, warm directional key and cobalt/blue rim light, smoothly lerped when the selected milestone changes.
+  * The selected medallion drives a saffron point light and glow.
+* **Interaction**: Click/tap a medallion to pause the orbit, focus it to the camera, raise it, and update the HUD. While in view the observatory auto-cycles every five seconds, and the active progress pill fills over those five seconds; clicking pauses, and `RESUME` restarts the cycle. Drag rotates the assembly on X between `-0.55` and `0.55` radians. The year rail and 2D chronicle select the same milestone.
+* **Labels**: All eight year labels are HTML overlays positioned by projecting 3D world coordinates each frame; active label colors adapt to light/dark eras and remain non-interactive (`pointer-events: none`).

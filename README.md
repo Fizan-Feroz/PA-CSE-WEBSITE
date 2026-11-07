@@ -56,12 +56,15 @@ Visit `http://localhost:5173/` in your browser.
 * Active glowing connection pin and animated bezier reach curve displaying curriculum codes, research facilities, and track coordinators.
 
 ### 3. 3D WebGL Chronology Astrolabe (`TimelineObservatory3D`)
-* An interactive 3D armillary sphere / astronomical observatory clock built with **Three.js**:
-  * Concentric brass and cobalt armillary rings with a central celestial academic core.
-  * 12 cobalt pillars topped with golden spherical finials.
-  * 8 milestone nodes mapping institutional history from inception in 2000 to the 2026+ Next-Gen R&D Hub.
-  * Drag to rotate and inspect the 3D astrolabe with physics damping.
-  * Dual mode toggle: **`3D · OBSERVATORY`** vs **`2D · CHRONICLE`** (with a flippable 180° hourglass).
+* A full-bleed interactive 3D chronology dial built with **Three.js**:
+  * Engraved paper dial generated from a canvas texture, with engraved years, tick ring, compass rose and orbit inlay.
+  * Central striped gnomon column, concentric brass/cobalt armillary rings and a cobalt academic core.
+  * 12 cobalt pillars with golden finials and 8 orbital medallions mapping institutional history from 2000 to 2026+.
+  * **Click/tap any medallion** to pause the orbit, focus it to the camera, raise it on a saffron stem and show its full milestone details in the HUD.
+  * **Auto-cycles every 5 seconds** through 2000 → 2006 → … → 2026, focusing and raising each medallion in turn; pause/resume is available in the HUD.
+  * Projected HTML year labels, a segmented 8-step progress rail, and an era-reactive backdrop that moves from archival paper through dusk to cobalt night.
+  * Drag to inspect the 3D astrolabe; the HUD exposes a **RESUME** control to restart the orbit.
+  * Dual mode toggle: **`3D · OBSERVATORY`** vs **`2D · CHRONICLE`** — a vertical, era-divided illustrated chronicle with four chapters.
 
 ### 4. Hero Section with Continuous SMIL-Animated Orbits
 * Vector mechanical eye featuring concentric elliptical orbits with continuously revolving beads driven by SVG SMIL `<animateMotion>`.

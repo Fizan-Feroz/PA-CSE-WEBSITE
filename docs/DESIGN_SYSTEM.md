@@ -101,7 +101,7 @@ The SVG circuit lines use precise cubic-like arc calculations:
 * **Coordinate Space**:
   * Origin `(0, 0, 0)` centered at the celestial core.
   * Pedestal dial top at `y = -3.7`; orbital medallion ring at `y = 0.9`, radius `11.2`; armillary center at `y = 4.4`.
-  * Camera position `(0, 21, 39)` looking at `(0, 2, 0)`, FOV 45°.
+  * Camera position `(0, 21, 39)` looking at `(0, -3, 0)`, FOV 45°; the framing keeps the dial vertically centred above the year rail.
 * **Scene Elements**:
   * Canvas-textured paper dial with engraved milestone years, tick ring, compass rose and orbit inlay.
   * Striped cobalt/saffron gnomon column, four armillary rings and a cobalt core.

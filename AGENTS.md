@@ -135,7 +135,7 @@ Sorting is purely descending by `score`, sliced to the top 12 results for zero l
 
 The 3D Astrolabe in [`src/components/TimelineObservatory3D.jsx`](file:///d:/Projects/PA-CSE-WEBSITE/src/components/TimelineObservatory3D.jsx) uses:
 - Canvas: transparent WebGL layer over a crossfading era backdrop (warm archival paper → cobalt dusk/night); the full-bleed stage is bordered top and bottom in ink.
-- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 21, 39)` looking at `(0, 2, 0)`.
+- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 21, 39)` looking at `(0, -3, 0)`, keeping the dial vertically centred above the year rail.
 - Geometry:
   - Engraved paper dial generated from a `CanvasTexture` (years, ticks, compass rose, concentric rings).
   - Central striped gnomon column, four armillary rings and a cobalt core.

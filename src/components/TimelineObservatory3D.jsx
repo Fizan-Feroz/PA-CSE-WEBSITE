@@ -246,7 +246,7 @@ export default function TimelineObservatory3D() {
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 21, 39);
-    camera.lookAt(0, 2, 0);
+    camera.lookAt(0, -3, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor(0x000000, 0);
@@ -1255,7 +1255,7 @@ export default function TimelineObservatory3D() {
             </div>
 
             {/* Desktop HUD */}
-            <div className="absolute left-4 top-4 z-30 hidden w-[360px] border-2 border-[#111111] bg-[#F6F2EB]/95 p-4 shadow-[6px_6px_0_0_#102D69] backdrop-blur-[2px] sm:block">
+            <div className="absolute left-4 top-4 z-30 hidden w-[360px] border-2 border-[#111111] bg-[#F6F2EB]/95 p-3.5 shadow-[6px_6px_0_0_#102D69] backdrop-blur-[2px] sm:block">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <div className="flex size-12 items-center justify-center rounded-full border-2 border-[#111111] bg-[#F5B700] text-[#102D69]">
@@ -1275,7 +1275,7 @@ export default function TimelineObservatory3D() {
                 </span>
               </div>
 
-              <div className="mt-3 flex items-end gap-2 border-b border-[#111111]/25 pb-2">
+              <div className="mt-2.5 flex items-end gap-2 border-b border-[#111111]/25 pb-2">
                 <span className="font-heading text-6xl font-bold leading-[0.75] text-[#102D69]">{activeMilestone.year}</span>
                 <div className="pb-0.5">
                   <span className="block font-tech text-[10px] font-bold uppercase tracking-wider text-[#102D69]">
@@ -1287,7 +1287,7 @@ export default function TimelineObservatory3D() {
                 </div>
               </div>
 
-              <p className="mt-2 font-sans text-[11px] font-medium leading-relaxed text-[#111111]/80">
+              <p className="mt-1.5 font-sans text-[11px] font-medium leading-snug text-[#111111]/80">
                 {activeMilestone.desc}
               </p>
 
@@ -1296,10 +1296,10 @@ export default function TimelineObservatory3D() {
                 activeIndex={safeIndex}
                 isPaused={isPaused}
                 isAnimating={isSectionInView && !isPaused}
-                className="mt-3"
+                className="mt-2"
               />
 
-              <div className="mt-2 flex items-center justify-between gap-2 border-t border-[#111111]/25 pt-2">
+              <div className="mt-1.5 flex items-center justify-between gap-2 border-t border-[#111111]/25 pt-1.5">
                 <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-wider text-[#102D69]">
                   <span className={`size-1.5 rounded-full ${isPaused ? 'border border-[#111111] bg-[#F5B700]' : 'animate-pulse bg-[#102D69]'}`} />
                   {isPaused ? 'Selected · paused' : 'Auto-cycle · 5s'}

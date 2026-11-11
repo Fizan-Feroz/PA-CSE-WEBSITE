@@ -62,15 +62,15 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
             <a 
               href="#" 
               onClick={handleSecretSealClick}
-              className="flex items-center gap-2.5 sm:gap-3 group shrink-0"
+              className="flex min-w-0 items-center gap-2.5 sm:min-w-[270px] sm:gap-3 lg:min-w-[300px] xl:shrink-0 group"
               title="P.A. College of Engineering"
             >
-              <div className="h-9 sm:h-10 px-2 sm:px-2.5 rounded-[2px] bg-[#102D69] border-2 border-[#111111] shadow-print-sm flex items-center justify-center text-[#F6F2EB] font-heading text-xl sm:text-2xl font-bold tracking-wider group-hover:-translate-x-px group-hover:-translate-y-px transition-transform select-none">
+              <div className="h-9 sm:h-10 px-2 sm:px-2.5 rounded-[2px] bg-[#102D69] border-2 border-[#111111] shadow-print-sm flex shrink-0 items-center justify-center text-[#F6F2EB] font-heading text-xl sm:text-2xl font-bold tracking-wider group-hover:-translate-x-px group-hover:-translate-y-px transition-transform select-none">
                 {collegeInfo.shortName || 'PACE'}
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-heading text-lg sm:text-2xl font-bold uppercase tracking-wider text-[#111111] leading-none truncate">
+                  <span className="font-heading text-base sm:text-2xl font-bold uppercase tracking-wider text-[#111111] leading-none truncate">
                     DEPT OF COMPUTER SCIENCE
                   </span>
                   <span className="hidden md:inline-block font-tech text-[10px] font-bold uppercase px-1.5 py-0.2 rounded-[2px] bg-[#F5B700] text-[#111111] border border-[#111111] shrink-0">
@@ -95,7 +95,7 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
                     Search faculty, syllabi, labs...
                   </span>
                 </div>
-                <div className="flex items-center gap-1 pl-1 font-mono text-[10px]">
+                <div className="hidden lg:flex items-center gap-1 pl-1 font-mono text-[10px]">
                   <kbd className="px-1 py-0.2 rounded-[2px] bg-[#E6DED4] border border-[#111111] text-[#111111] font-bold">
                     Ctrl+K
                   </kbd>
@@ -104,7 +104,7 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
             </div>
 
             {/* Right Desktop Navigation Anchors in Rajdhani Uppercase */}
-            <nav className="hidden lg:flex items-center gap-5 font-tech text-sm font-bold uppercase tracking-wider text-[#111111]">
+            <nav className="hidden xl:flex items-center gap-2.5 font-tech text-sm font-bold uppercase tracking-wider text-[#111111]">
               <a href="#domains-section" className="hover:text-[#102D69] transition-colors underline-offset-4 hover:underline">
                 Tracks
               </a>
@@ -126,22 +126,22 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
             </nav>
 
             {/* Actions: AI Tutor + Search Button on mobile + Hamburger Toggle */}
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <button
                 onClick={onOpenChatbot}
-                className="p-1.5 sm:px-3 sm:py-1.5 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                className="hidden xl:flex p-1.5 sm:px-3 sm:py-1.5 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer items-center gap-1.5"
                 title="Open AI Academic Tutor (Ctrl+J)"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#102D69]" />
                 <span className="hidden sm:inline">AI TUTOR</span>
-                <span className="hidden md:inline-block font-mono text-[9px] px-1 rounded-[2px] bg-[#111111] text-[#F6F2EB]">
+                <span className="hidden md:inline-block xl:hidden font-mono text-[9px] px-1 rounded-[2px] bg-[#111111] text-[#F6F2EB]">
                   ^J
                 </span>
               </button>
 
               <button
                 onClick={onOpenSearch}
-                className="p-1.5 sm:p-2 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                className="flex sm:hidden p-1.5 sm:p-2 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all cursor-pointer items-center gap-1.5"
                 title="Search (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
               {/* Mobile Menu Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(prev => !prev)}
-                className="lg:hidden p-1.5 sm:p-2 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] border-2 border-[#111111] shadow-print-sm cursor-pointer"
+                className="xl:hidden p-1.5 sm:p-2 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] border-2 border-[#111111] shadow-print-sm cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -163,11 +163,11 @@ export default function Navbar({ onOpenSearch, onOpenChatbot }) {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t-2 border-[#111111] bg-[#F6F2EB] p-4 shadow-print animate-in slide-in-from-top-2 duration-150">
-            <div className="flex items-center justify-between pb-3 mb-3 border-b-2 border-[#111111] font-tech text-xs font-bold uppercase text-[#102D69]">
-              <span className="flex items-center gap-1">
-                <Shield className="w-3.5 h-3.5" />
-                DEPARTMENT DIRECTORY NAVIGATION
+          <div className="xl:hidden border-t-2 border-[#111111] bg-[#F6F2EB] p-4 shadow-print animate-in slide-in-from-top-2 duration-150">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b-2 border-[#111111] font-tech text-xs font-bold uppercase text-[#102D69]">
+              <span className="flex min-w-0 items-center gap-1">
+                <Shield className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">DEPARTMENT DIRECTORY NAVIGATION</span>
               </span>
               <span className="font-mono text-[#111111]/60">PACE MANGALURU</span>
             </div>

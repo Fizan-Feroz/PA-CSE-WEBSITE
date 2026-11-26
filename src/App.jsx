@@ -1,47 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import SearchModal from './components/SearchModal';
-import AdminModal from './components/AdminModal';
-import AcademicChatbotModal from './components/AcademicChatbotModal';
 import BranchedDomainTree from './components/BranchedDomainTree';
 import FacultySection from './components/FacultySection';
 import LabsSection from './components/LabsSection';
 import CurriculumSection from './components/CurriculumSection';
 import ProjectsAndEventsSection from './components/ProjectsAndEventsSection';
 import TimelineObservatory3D from './components/TimelineObservatory3D';
-import { DepartmentDataProvider } from './context/DepartmentDataContext';
-import { useDepartmentData } from './context/DepartmentContextCore';
-import { Search, Compass, Phone, Mail, MapPin, Sparkles } from 'lucide-react';
+import StudentHubSection from './components/StudentHubSection';
+import LocalAISection from './components/LocalAISection';
+import FacultySetupModal from './components/FacultySetupModal';
+import { COLLEGE_INFO, SECTION_TIMETABLES, COURSES_SYLLABI } from './data/cseData';
+import { loadPortalOverrides, savePortalOverrides, fetchLivePortalData } from './utils/portalStore';
+import { Search, Compass, Phone, Mail, MapPin, BookOpen, Cpu } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-function MainAppContent() {
-  const { collegeInfo, labs, openAdminModal } = useDepartmentData();
+export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const [chatbotDefaultCourse, setChatbotDefaultCourse] = useState('ALL');
+  const [isFacultySetupOpen, setIsFacultySetupOpen] = useState(false);
   const [activeDomainId, setActiveDomainId] = useState(null);
+  const [timetables, setTimetables] = useState(() => loadPortalOverrides().timetables || SECTION_TIMETABLES);
+  const [courses, setCourses] = useState(() => loadPortalOverrides().courses || COURSES_SYLLABI);
+
+  useEffect(() => {
+    let active = true;
+    fetchLivePortalData(SECTION_TIMETABLES, COURSES_SYLLABI).then((res) => {
+      if (!active || res.source !== 'supabase') return;
+      setTimetables(res.timetables);
+      setCourses(res.courses);
+    });
+
+    function syncFromStore() {
+      const overrides = loadPortalOverrides();
+      setTimetables(overrides.timetables || SECTION_TIMETABLES);
+      setCourses(overrides.courses || COURSES_SYLLABI);
+    }
+    window.addEventListener('pace-portal-updated', syncFromStore);
+    return () => {
+      active = false;
+      window.removeEventListener('pace-portal-updated', syncFromStore);
+    };
+  }, []);
+
+  function handleSaveTimetables(nextTimetables) {
+    setTimetables(nextTimetables);
+    const current = loadPortalOverrides();
+    savePortalOverrides({ ...current, timetables: nextTimetables });
+  }
+
+  function handleSaveCourses(nextCourses) {
+    setCourses(nextCourses);
+    const current = loadPortalOverrides();
+    savePortalOverrides({ ...current, courses: nextCourses });
+  }
 
   useEffect(() => {
     function handleKeyDown(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setIsSearchOpen(prev => !prev);
-      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'j' || e.key === 'J')) {
-        e.preventDefault();
-        setIsChatbotOpen(prev => !prev);
       } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
         e.preventDefault();
         setIsSearchOpen(true);
-      } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-        e.preventDefault();
-        openAdminModal('general');
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openAdminModal]);
+  }, []);
 
   function handleSelectResult(item) {
     if (item.type === 'domain') {
@@ -49,10 +76,6 @@ function MainAppContent() {
       setActiveDomainId(domainId);
     }
   }
-
-  const establishedYear = collegeInfo.established || 2000;
-  const yearsOfExcellence = Math.max(1, CURRENT_YEAR - establishedYear);
-  const labCount = labs ? labs.length : 6;
 
   return (
     <div className="min-h-screen bg-[#E6DED4] text-[#111111] selection:bg-[#102D69] selection:text-[#F6F2EB]">
@@ -64,40 +87,37 @@ function MainAppContent() {
         onSelectResult={handleSelectResult}
       />
 
-      {/* Academic RAG Subject Chatbot Modal */}
-      <AcademicChatbotModal
-        isOpen={isChatbotOpen}
-        onClose={() => setIsChatbotOpen(false)}
-        defaultCourse={chatbotDefaultCourse}
+      {/* Faculty Quick Setup Modal (Timetable Image Scanner & Course Files) */}
+      <FacultySetupModal
+        isOpen={isFacultySetupOpen}
+        onClose={() => setIsFacultySetupOpen(false)}
+        timetables={timetables}
+        onSaveTimetables={handleSaveTimetables}
+        courses={courses}
+        onSaveCourses={handleSaveCourses}
       />
 
-      {/* Admin Control Center Modal */}
-      <AdminModal />
-
       {/* Top Navbar */}
-      <Navbar 
-        onOpenSearch={() => setIsSearchOpen(true)} 
-        onOpenChatbot={() => {
-          setChatbotDefaultCourse('ALL');
-          setIsChatbotOpen(true);
-        }}
+      <Navbar
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
       />
 
       {/* Poster Hero Section (Print Brutalist Visual Engine with SMIL Orbiting Eye & Spark) */}
-      <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20 border-b-2 border-[#111111]">
+      <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 border-b-2 border-[#111111]">
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* Technical Coordinates & Top Metadata Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-6 pb-3 border-b-2 border-[#111111]/20 font-tech text-xs tracking-widest uppercase font-bold text-[#111111]/70">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-3 border-b-2 border-[#111111]/20 font-tech text-xs tracking-widest uppercase font-bold text-[#111111]/70">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#102D69] animate-ping" />
-              <span className="truncate">{collegeInfo.coordinates || '12.85° N · 74.96° E'} · NADUPADAV, MANGALURU</span>
+              <span>{COLLEGE_INFO.coordinates} · NADUPADAV, MANGALURU</span>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="hidden sm:inline">ESTD {establishedYear} · VTU BELAGAVI · AICTE APPROVED</span>
-              <span className="bg-[#102D69] text-[#F6F2EB] px-2 py-0.5 rounded-[2px] font-mono text-[11px]">
-                {collegeInfo.accreditation?.includes('NBA') ? 'NBA TIER-1' : 'ACCREDITED'}
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:inline">ESTD 2000 · VTU BELAGAVI · AICTE APPROVED</span>
+              <span className="bg-[#102D69] text-[#F6F2EB] px-2 py-0.5 rounded-[2px] font-mono">
+                NBA TIER-1
               </span>
             </div>
           </div>
@@ -106,18 +126,18 @@ function MainAppContent() {
           <div className="flex justify-center mb-6">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm hover:shadow-print hover:-translate-x-px hover:-translate-y-px transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm hover:shadow-print hover:-translate-x-px hover:-translate-y-px transition-all font-tech text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
             >
               <Search className="w-4 h-4 text-[#102D69]" />
               <span>LAUNCH CSE SPOTLIGHT SEARCH DIRECTORY</span>
-              <span className="bg-[#111111] text-[#F6F2EB] px-1.5 py-0.2 rounded-[2px] font-mono text-[10px] sm:text-[11px]">
+              <span className="bg-[#111111] text-[#F6F2EB] px-1.5 py-0.2 rounded-[2px] font-mono text-[11px]">
                 CTRL + K
               </span>
             </button>
           </div>
 
           {/* Central Mechanical Eye Graphic with Continuous SMIL Orbits */}
-          <div className="relative mx-auto w-36 h-24 sm:w-48 sm:h-32 mb-4 flex items-center justify-center">
+          <div className="relative mx-auto w-40 h-28 sm:w-48 sm:h-32 mb-4 flex items-center justify-center">
             <svg 
               className="w-full h-full overflow-visible" 
               viewBox="-120 -80 240 160"
@@ -153,12 +173,12 @@ function MainAppContent() {
             </svg>
           </div>
 
-          {/* Giant Brutalist Poster Heading with Break-Words Protection */}
+          {/* Giant Brutalist Poster Heading */}
           <div className="text-center max-w-5xl mx-auto space-y-3">
-            <p className="font-tech text-xs sm:text-base font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#102D69]">
-              {collegeInfo.name || 'P.A. COLLEGE OF ENGINEERING'} · NADUPADAV, MANGALURU
+            <p className="font-tech text-sm sm:text-base font-bold uppercase tracking-[0.25em] text-[#102D69]">
+              P.A. COLLEGE OF ENGINEERING · NADUPADAV, MANGALURU
             </p>
-            <h1 className="font-heading text-4xl sm:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.88] text-[#111111] break-words">
+            <h1 className="font-heading text-5xl sm:text-7xl lg:text-9xl font-bold tracking-tight uppercase leading-[0.88] text-[#111111]">
               COMPUTER SCIENCE <br />
               <span className="text-[#102D69] underline decoration-[#F5B700] decoration-4 underline-offset-8">
                 &amp; ENGINEERING
@@ -170,56 +190,57 @@ function MainAppContent() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
-            <button
-              onClick={() => {
-                setChatbotDefaultCourse('ALL');
-                setIsChatbotOpen(true);
-              }}
-              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-saffron hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-[#102D69]" />
-              <span>AI SUBJECT TUTOR (CTRL + J)</span>
-            </button>
-
+          <div className="flex flex-wrap items-center justify-center gap-3.5 mt-8">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:shadow-print-cobalt hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
             >
               <Search className="w-4 h-4 text-[#F5B700]" />
-              <span>SEARCH DIRECTORY (CTRL + K)</span>
+              <span>SEARCH EVERYTHING (CTRL + K)</span>
             </button>
 
             <a
+              href="#curriculum-section"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-[2px] bg-[#F5B700] hover:bg-[#e0a800] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
+            >
+              <BookOpen className="w-4 h-4 text-[#111111]" />
+              <span>COURSE MATERIALS (SEM 1–8)</span>
+            </a>
+
+            <a
+              href="#local-ai-section"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
+            >
+              <Cpu className="w-4 h-4 text-[#102D69]" />
+              <span>LOCAL AI SETUP</span>
+            </a>
+
+            <a
               href="#timeline-observatory"
-              className="w-full sm:w-auto px-5 sm:px-6 py-3 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-[2px] bg-[#F6F2EB] hover:bg-[#E6DED4] text-[#111111] font-tech text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-[#111111] shadow-print hover:-translate-x-px hover:-translate-y-px transition-all"
             >
               <Compass className="w-4 h-4 text-[#102D69]" />
-              <span>3D CHRONOLOGY</span>
+              <span>3D OBSERVATORY</span>
             </a>
           </div>
 
           {/* Technical Metric Placards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-10 sm:mt-12 max-w-4xl mx-auto">
-            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#102D69] leading-none block">NBA</span>
-              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">TIER-1 ACCREDITED</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
+            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#102D69] leading-none block">NBA</span>
+              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">TIER-1 ACCREDITED</p>
             </div>
-            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] leading-none block">94.8%</span>
-              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">CAMPUS PLACEMENTS</p>
+            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#111111] leading-none block">VTU</span>
+              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">RESEARCH CENTRE</p>
             </div>
-            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#102D69] leading-none block">
-                {labCount < 10 ? `0${labCount}` : labCount}
-              </span>
-              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">SPECIALIZED LABS</p>
+            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#102D69] leading-none block">06</span>
+              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">SPECIALIZED LABS</p>
             </div>
-            <div className="p-3 sm:p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
-              <span className="font-heading text-3xl sm:text-5xl font-bold text-[#111111] leading-none block">
-                {yearsOfExcellence}+
-              </span>
-              <p className="font-tech text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">YEARS OF EXCELLENCE</p>
+            <div className="p-4 rounded-[2px] bg-[#F6F2EB] border-2 border-[#111111] shadow-print-sm text-center">
+              <span className="font-heading text-4xl sm:text-5xl font-bold text-[#111111] leading-none block">25+</span>
+              <p className="font-tech text-xs font-bold uppercase tracking-wider text-[#111111]/70 mt-1">YEARS OF EXCELLENCE</p>
             </div>
           </div>
 
@@ -232,38 +253,34 @@ function MainAppContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Vision */}
-            <div className="lg:col-span-5 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px] flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-6 rounded-[2px] flex flex-col justify-between">
               <div>
-                <div className="mb-1">
-                  <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
-                    DEPARTMENT VISION · PACE MANGALURU
-                  </span>
-                </div>
-                <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-2 leading-none">
+                <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block mb-1">
+                  DEPARTMENT VISION · PACE MANGALURU
+                </span>
+                <h3 className="font-heading text-3xl font-bold uppercase text-[#111111] mb-2 leading-none">
                   COMPETENT PROFESSIONALS FOR INDUSTRY &amp; SOCIETY
                 </h3>
                 <p className="font-sans text-xs sm:text-sm text-[#111111]/85 font-medium leading-relaxed italic">
-                  "{collegeInfo.vision}"
+                  "{COLLEGE_INFO.vision}"
                 </p>
               </div>
-              <div className="pt-4 mt-4 border-t border-[#111111]/20 flex flex-wrap items-center justify-between gap-2 text-xs font-tech font-bold uppercase text-[#102D69]">
-                <span>Head of Department: {collegeInfo.vicePrincipalAndHod}</span>
-                <span className="font-mono text-[#111111]">{collegeInfo.contact?.hodEmail || 'hod_cs@pace.edu.in'}</span>
+              <div className="pt-4 mt-4 border-t border-[#111111]/20 flex items-center justify-between text-xs font-tech font-bold uppercase text-[#102D69]">
+                <span>Head of Department: {COLLEGE_INFO.vicePrincipalAndHod}</span>
+                <span className="font-mono text-[#111111]">hod_cs@pace.edu.in</span>
               </div>
             </div>
 
             {/* Mission */}
-            <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-5 sm:p-6 rounded-[2px]">
-              <div className="mb-1">
-                <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block">
-                  DEPARTMENT MISSION OBJECTIVES
-                </span>
-              </div>
-              <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase text-[#111111] mb-3 leading-none">
+            <div className="lg:col-span-7 bg-[#E6DED4] border-2 border-[#111111] shadow-print-sm p-6 rounded-[2px]">
+              <span className="font-tech text-xs font-bold uppercase tracking-widest text-[#102D69] block mb-1">
+                DEPARTMENT MISSION OBJECTIVES
+              </span>
+              <h3 className="font-heading text-3xl font-bold uppercase text-[#111111] mb-3 leading-none">
                 FOUR PILLARS OF ACADEMIC EXCELLENCE
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {collegeInfo.mission.map((m, idx) => (
+                {COLLEGE_INFO.mission.map((m, idx) => (
                   <div key={idx} className="p-3 bg-[#F6F2EB] border border-[#111111] rounded-[2px] flex gap-2.5 items-start">
                     <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded-[2px] bg-[#102D69] text-[#F6F2EB] shrink-0">
                       M{idx + 1}
@@ -280,8 +297,23 @@ function MainAppContent() {
         </div>
       </section>
 
+      {/* One-Stop Student Hub: Notice Board, Quick Portals & Chapters */}
+      <StudentHubSection
+        timetables={timetables}
+        onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
+      />
+
+      {/* Autonomous Curriculum & Course Materials Vault (Semesters 1–8) */}
+      <CurriculumSection
+        courses={courses}
+        onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
+      />
+
+      {/* Local AI Setup Workbench for Offline Coding & Study */}
+      <LocalAISection />
+
       {/* Specialization Domains & VTU Autonomous Curriculum Circuit Tree */}
-      <section id="domains-section" className="py-12 sm:py-16">
+      <section id="domains-section" className="py-12 sm:py-16 border-t-2 border-[#111111]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <BranchedDomainTree
             activeDomainId={activeDomainId}
@@ -299,14 +331,6 @@ function MainAppContent() {
       {/* Laboratories & Centers of Excellence */}
       <LabsSection />
 
-      {/* Autonomous Curriculum & Scheme */}
-      <CurriculumSection 
-        onOpenChatbot={(code) => {
-          setChatbotDefaultCourse(code || 'ALL');
-          setIsChatbotOpen(true);
-        }}
-      />
-
       {/* Student Research, Prototypes & Events */}
       <ProjectsAndEventsSection />
 
@@ -318,31 +342,36 @@ function MainAppContent() {
               DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING
             </p>
             <p className="text-[#F6F2EB]/80 uppercase tracking-wider">
-              {collegeInfo.name || 'P.A. College of Engineering (PACE)'}, {collegeInfo.campusAddress || 'Nadupadav, Montepadav Post, Mangaluru - 574153'}
+              P.A. College of Engineering (PACE), Nadupadav, Montepadav Post, Mangaluru - 574153
             </p>
             <p className="font-mono text-[#F5B700] text-[11px] uppercase">
-              {collegeInfo.affiliation} · {collegeInfo.approvals} · {collegeInfo.accreditation}
+              Affiliated to VTU Belagavi · Approved by AICTE New Delhi · Accredited by NBA Tier-1
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2 text-[#F6F2EB]/70 font-mono text-[11px]">
               <span className="flex items-center gap-1">
-                <Phone className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.contact?.phone || '0824-2284701 / 02 / 03'}
+                <Phone className="w-3.5 h-3.5 text-[#F5B700]" /> 0824-2284701 / 02 / 03
               </span>
               <span className="flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.contact?.hodEmail || 'hod_cs@pace.edu.in'}
+                <Mail className="w-3.5 h-3.5 text-[#F5B700]" /> hod_cs@pace.edu.in
               </span>
               <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#F5B700]" /> {collegeInfo.coordinates || '12.85° N · 74.96° E'}
+                <MapPin className="w-3.5 h-3.5 text-[#F5B700]" /> 12.85° N · 74.96° E
               </span>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 font-bold uppercase tracking-wider text-[#F6F2EB]">
-            <a href="#domains-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Tracks</a>
-            <a href="#timeline-observatory" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">3D Observatory</a>
+          <div className="flex flex-wrap items-center gap-6 font-bold uppercase tracking-wider text-[#F6F2EB]">
+            <a href="#student-hub-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Student Hub</a>
+            <a href="#curriculum-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Materials</a>
+            <a href="#local-ai-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Local AI</a>
             <a href="#faculty-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Faculty</a>
-            <a href="#labs-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Laboratories</a>
-            <a href="#curriculum-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Syllabus</a>
-            <a href="#projects-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Projects</a>
+            <a href="#labs-section" className="hover:text-[#F5B700] transition-colors underline-offset-4 hover:underline">Labs</a>
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className="text-[#F5B700] underline cursor-pointer"
+            >
+              Spotlight Search (Ctrl+K)
+            </button>
           </div>
         </div>
 
@@ -352,33 +381,6 @@ function MainAppContent() {
         </div>
       </footer>
 
-      {/* Floating AI Academic Tutor Trigger Dock */}
-      <div className="fixed bottom-5 right-5 z-30">
-        <button
-          onClick={() => {
-            setChatbotDefaultCourse('ALL');
-            setIsChatbotOpen(true);
-          }}
-          className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-[2px] bg-[#F5B700] hover:bg-[#d9a200] text-[#111111] border-2 border-[#111111] shadow-print font-tech text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center gap-2 hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 transition-all cursor-pointer"
-          title="Open AI Academic Assistant (Ctrl+J)"
-        >
-          <Sparkles className="w-4 h-4 text-[#102D69]" />
-          <span className="hidden sm:inline">AI ACADEMIC TUTOR</span>
-          <span className="sm:hidden">AI TUTOR</span>
-          <span className="bg-[#111111] text-[#F6F2EB] px-1 py-0.2 rounded-[2px] font-mono text-[10px]">
-            ^J
-          </span>
-        </button>
-      </div>
-
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <DepartmentDataProvider>
-      <MainAppContent />
-    </DepartmentDataProvider>
   );
 }

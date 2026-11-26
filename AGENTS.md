@@ -54,11 +54,14 @@ src/
 └── components/
     ├── Navbar.jsx                    # Header with PACE seal, search omnibar launcher, navigation links
     ├── SearchModal.jsx               # Spotlight search palette (Ctrl+K / /) with fuzzy scoring & keyboard navigation
+    ├── StudentHubSection.jsx         # One-stop student notice board, quick portals & student chapters
+    ├── CurriculumSection.jsx         # Semesters 1–8 courses vault with type & semester filtering
+    ├── MaterialViewerModal.jsx       # In-site material viewer & 1-click downloader (Drive/PDF/Study Packs)
+    ├── LocalAISection.jsx            # Interactive Local AI configurator, scripts & localhost Ollama check
     ├── BranchedDomainTree.jsx        # SVG circuit-line track tree with active reach animations & pin lights
     ├── TimelineObservatory3D.jsx     # Three.js 3D Astrolabe Clock + 2D historical chronicle toggle
     ├── FacultySection.jsx            # Academic council & faculty directory with instant filter pills & search
     ├── LabsSection.jsx               # Computing laboratories, CoEs, and hardware specs
-    ├── CurriculumSection.jsx         # Autonomous scheme syllabi organized by semester
     └── ProjectsAndEventsSection.jsx  # Student research (ASCII / KSCST) and academic conferences/symposia
 ```
 
@@ -134,20 +137,15 @@ Sorting is purely descending by `score`, sliced to the top 12 results for zero l
 ## 5. Three.js 3D Astrolabe Operating Rules
 
 The 3D Astrolabe in [`src/components/TimelineObservatory3D.jsx`](file:///d:/Projects/PA-CSE-WEBSITE/src/components/TimelineObservatory3D.jsx) uses:
-- Canvas: transparent WebGL layer over a crossfading era backdrop (warm archival paper → cobalt dusk/night); the full-bleed stage is bordered top and bottom in ink.
-- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 21, 39)` looking at `(0, -3, 0)`, keeping the dial vertically centred above the year rail.
-- Geometry:
-  - Engraved paper dial generated from a `CanvasTexture` (years, ticks, compass rose, concentric rings).
-  - Central striped gnomon column, four armillary rings and a cobalt core.
-  - Eight orbital medallions at `ORBIT_RADIUS = 11.2`, `ORBIT_Y = 0.9`, one per department milestone.
-  - Projected HTML year labels (active label is saffron on night eras, cobalt on light eras).
+- Canvas background: `0xE6DED4` (Warm print paper)
+- Camera: `PerspectiveCamera(45, width / height, 0.1, 1000)` at `(0, 18, 38)` looking at `(0, 2, 0)`
 - Materials:
-  - Brass Gold (`0xC5A059`, roughness 0.3, metalness 0.78)
-  - Heritage Cobalt (`0x102D69`, roughness 0.38, metalness 0.55)
-  - Saffron Accent (`0xF5B700`, roughness 0.22, metalness 0.45)
-  - Ink (`0x111111`) and paper (`0xEFE7D9`) accents
-- Interaction: clicking/tapping a medallion pauses the orbit, rotates it to the camera, raises it on a saffron stem and updates the HUD; the year rail and HUD progress track the active milestone. While the stage is in view, the observatory auto-cycles to the next milestone every five seconds, with the active progress pill filling over those five seconds; clicking pauses the cycle and `RESUME` restarts it. Manual drag remains available while paused. The animation loop reads selection and pause through refs so selecting a milestone never rebuilds the scene.
-- Cleanup: Every listener (`pointerdown`, `pointermove`, `pointerup`, `pointerleave`), the `ResizeObserver`, `cancelAnimationFrame`, every tracked geometry/material/texture, and `renderer.dispose()` must execute on unmount.
+  - Brass Gold (`0xC5A059`, roughness 0.3, metalness 0.8)
+  - Heritage Cobalt (`0x102D69`, roughness 0.4, metalness 0.6)
+  - Saffron Accent (`0xF5B700`, roughness 0.2, metalness 0.5)
+  - Ink Rim Wireframe (`0x111111`)
+- Gimbal physics: Pointer drag updates `rotation.y` by `deltaX * 0.008` and `rotation.x` by `deltaY * 0.005` (clamped between `-0.6` and `+0.6` radians).
+- Cleanup: Every listener (`pointerdown`, `pointermove`, `pointerup`, `resize`) and `cancelAnimationFrame` must execute on unmount.
 
 ---
 

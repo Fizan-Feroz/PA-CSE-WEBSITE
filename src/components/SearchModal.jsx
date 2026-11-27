@@ -6,10 +6,16 @@ import {
 import { 
   FACULTY_MEMBERS, COURSES_SYLLABI, LABORATORIES, 
   STUDENT_PROJECTS, UPCOMING_EVENTS, CSE_DOMAINS,
-  STUDENT_NOTICES, LOCAL_AI_PROFILES
+  STUDENT_NOTICES, LOCAL_AI_PROFILES, SECTION_TIMETABLES
 } from '../data/cseData';
 
-export default function SearchModal({ isOpen, onClose, onSelectResult }) {
+export default function SearchModal({
+  isOpen,
+  onClose,
+  onSelectResult,
+  courses = COURSES_SYLLABI,
+  timetables = SECTION_TIMETABLES
+}) {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -67,20 +73,39 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
       });
     });
 
-    // Courses & Materials
-    COURSES_SYLLABI.forEach(c => {
+    // Courses & Materials (live from state/Supabase)
+    courses.forEach(c => {
       const matKeywords = (c.materials || []).flatMap(m => [m.type, m.title]);
       list.push({
         id: `course-${c.code}`,
         category: 'Courses',
         type: 'course',
+        courseCode: c.code,
         title: `${c.code}: ${c.title}`,
         subtitle: `${c.semester} · ${c.credits} Credits · ${(c.materials || []).length} Materials`,
-        description: `Topics: ${c.topics.join(', ')}`,
+        description: `Topics: ${(c.topics || []).join(', ')}`,
         icon: BookOpen,
         badge: c.semester.toUpperCase(),
         targetId: 'curriculum-section',
-        keywords: [c.code, c.title, c.semester, c.domain, ...c.topics, ...matKeywords, 'notes', 'pyq', 'syllabus']
+        keywords: [c.code, c.title, c.semester, c.domain, ...(c.topics || []), ...matKeywords, 'notes', 'pyq', 'syllabus']
+      });
+    });
+
+    // Section Timetables (live from state/Supabase)
+    timetables.forEach(tt => {
+      const slotWords = (tt.schedule || []).flatMap(r => r.slots || []);
+      list.push({
+        id: `timetable-${tt.section}`,
+        category: 'Timetables',
+        type: 'timetable',
+        section: tt.section,
+        title: `${tt.section} Class Timetable`,
+        subtitle: `${tt.semester} · ${tt.room}`,
+        description: `Weekly MON–FRI schedule (${slotWords.length} slots)`,
+        icon: Calendar,
+        badge: tt.section,
+        targetId: 'timetable-panel',
+        keywords: [tt.section, tt.semester, tt.room, 'timetable', 'schedule', 'classes', ...slotWords]
       });
     });
 
@@ -166,7 +191,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
     });
 
     return list;
-  }, []);
+  }, [courses, timetables]);
 
   const filteredResults = useMemo(() => {
     let items = allItems;
@@ -249,6 +274,7 @@ export default function SearchModal({ isOpen, onClose, onSelectResult }) {
   const categories = [
     { id: 'all', label: 'ALL ENTRIES' },
     { id: 'notices', label: 'NOTICES' },
+    { id: 'timetables', label: 'TIMETABLES' },
     { id: 'courses', label: 'MATERIALS' },
     { id: 'local ai', label: 'LOCAL AI' },
     { id: 'domains', label: '5 TRACKS' },

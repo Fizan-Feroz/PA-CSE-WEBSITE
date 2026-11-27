@@ -106,3 +106,24 @@ body {
   background: #111111;
   border-radius: 2px;
 }
+
+@media print {
+  body.printing-material * {
+    visibility: hidden;
+  }
+  body.printing-material #material-print-root,
+  body.printing-material #material-print-root * {
+    visibility: visible;
+  }
+  body.printing-material #material-print-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+  }
+}

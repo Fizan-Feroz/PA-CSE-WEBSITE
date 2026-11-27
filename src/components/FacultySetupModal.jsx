@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   X, Upload, Sparkles, Calendar, BookOpen, Download, RotateCcw,
-  Plus, CheckCircle2, AlertCircle, Image as ImageIcon, Cloud, LogIn, LogOut
+  Plus, CheckCircle2, AlertCircle, Image as ImageIcon, Cloud, LogIn, LogOut, Shield, Lock
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { resolveDriveUrls } from '../utils/driveHelper';
+import { hasPermission } from '../utils/rbac';
+import RoleManagerPanel from './RoleManagerPanel';
 import {
   fileToBase64,
   parseTimetableImageWithOllama,
@@ -22,9 +24,15 @@ export default function FacultySetupModal({
   timetables,
   onSaveTimetables,
   courses,
-  onSaveCourses
+  onSaveCourses,
+  rbacState,
+  activeRole,
+  onUpdateRbac
 }) {
-  const [activeTab, setActiveTab] = useState('timetable'); // 'timetable' | 'courses'
+  const [activeTab, setActiveTab] = useState('timetable'); // 'timetable' | 'courses' | 'roles'
+  const canManageTimetables = hasPermission(activeRole, 'manage_timetables');
+  const canManageCourses = hasPermission(activeRole, 'manage_courses');
+  const canManageRoles = hasPermission(activeRole, 'manage_roles');
   const supabaseReady = isSupabaseConfigured();
   const [userEmail, setUserEmail] = useState('');
   const [authEmailInput, setAuthEmailInput] = useState('');
@@ -381,41 +389,65 @@ export default function FacultySetupModal({
             )}
           </div>
 
-          {supabaseReady && (
-            userEmail ? (
-              <button
-                onClick={handleSignOut}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-tech text-[11px] font-bold uppercase cursor-pointer self-start sm:self-auto"
+          <div className="flex flex-wrap items-center gap-2">
+            {activeRole && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-tech text-[11px] font-bold uppercase">
+                <span className="w-2.5 h-2.5 rounded-full border border-[#111111]" style={{ backgroundColor: activeRole.color }} />
+                <span>ROLE: {activeRole.name}</span>
+              </span>
+            )}
+
+            {!supabaseReady && rbacState && onUpdateRbac && (
+              <select
+                aria-label="Preview account role"
+                value={rbacState.activeRoleId}
+                onChange={(e) => onUpdateRbac({ ...rbacState, activeRoleId: e.target.value })}
+                className="px-2 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-tech text-[11px] font-bold uppercase cursor-pointer"
               >
-                <LogOut className="w-3 h-3" />
-                <span>SIGN OUT</span>
-              </button>
-            ) : (
-              <form onSubmit={handleSendMagicLink} className="flex items-center gap-1.5">
-                <input
-                  type="email"
-                  required
-                  value={authEmailInput}
-                  onChange={(e) => setAuthEmailInput(e.target.value)}
-                  placeholder="faculty@pace.edu.in"
-                  className="px-2 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-mono text-[11px] w-44"
-                />
+                {rbacState.roles.map(r => (
+                  <option key={r.id} value={r.id}>
+                    Switch Account: {r.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {supabaseReady && (
+              userEmail ? (
                 <button
-                  type="submit"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[2px] bg-[#102D69] text-[#F6F2EB] font-tech text-[11px] font-bold uppercase cursor-pointer"
+                  onClick={handleSignOut}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-tech text-[11px] font-bold uppercase cursor-pointer self-start sm:self-auto"
                 >
-                  <LogIn className="w-3 h-3" />
-                  <span>SIGN IN</span>
+                  <LogOut className="w-3 h-3" />
+                  <span>SIGN OUT</span>
                 </button>
-                {authStatus && <span className="font-sans text-[11px] text-[#102D69] font-semibold">{authStatus}</span>}
-              </form>
-            )
-          )}
+              ) : (
+                <form onSubmit={handleSendMagicLink} className="flex items-center gap-1.5">
+                  <input
+                    type="email"
+                    required
+                    value={authEmailInput}
+                    onChange={(e) => setAuthEmailInput(e.target.value)}
+                    placeholder="faculty@pace.edu.in"
+                    className="px-2 py-1 rounded-[2px] bg-[#E6DED4] border border-[#111111] font-mono text-[11px] w-44"
+                  />
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[2px] bg-[#102D69] text-[#F6F2EB] font-tech text-[11px] font-bold uppercase cursor-pointer"
+                  >
+                    <LogIn className="w-3 h-3" />
+                    <span>SIGN IN</span>
+                  </button>
+                  {authStatus && <span className="font-sans text-[11px] text-[#102D69] font-semibold">{authStatus}</span>}
+                </form>
+              )
+            )}
+          </div>
         </div>
 
         {/* Mode Tabs */}
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b-2 border-[#111111] bg-[#E6DED4]/60">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setActiveTab('timetable')}
               className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[2px] border-2 border-[#111111] font-tech text-xs font-bold uppercase cursor-pointer ${
@@ -434,6 +466,15 @@ export default function FacultySetupModal({
               <BookOpen className="w-3.5 h-3.5" />
               <span>2. COURSE DETAILS, DRIVE &amp; FILES</span>
             </button>
+            <button
+              onClick={() => setActiveTab('roles')}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[2px] border-2 border-[#111111] font-tech text-xs font-bold uppercase cursor-pointer ${
+                activeTab === 'roles' ? 'bg-[#102D69] text-[#F6F2EB] shadow-print-sm' : 'bg-[#F6F2EB] text-[#111111]'
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>3. ROLES &amp; PERMISSIONS</span>
+            </button>
           </div>
 
           {statusToast && (
@@ -446,7 +487,38 @@ export default function FacultySetupModal({
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-5 bg-[#E6DED4]">
-          {activeTab === 'timetable' ? (
+          {activeTab === 'roles' ? (
+            !canManageRoles ? (
+              <div className="bg-[#F6F2EB] border-2 border-[#111111] shadow-print rounded-[2px] p-8 text-center space-y-3">
+                <Lock className="w-8 h-8 mx-auto text-[#102D69]" />
+                <h4 className="font-tech text-lg font-bold uppercase text-[#111111]">
+                  PERMISSION REQUIRED: MANAGE ROLES &amp; MEMBERS
+                </h4>
+                <p className="font-sans text-xs text-[#111111]/75 max-w-md mx-auto">
+                  Your active role (<strong>{activeRole?.name}</strong>) does not have <code className="font-mono">manage_roles</code> permission. Switch to <strong>HOD / Super Admin</strong> in the top bar to configure roles.
+                </p>
+              </div>
+            ) : (
+              <RoleManagerPanel
+                roles={rbacState.roles}
+                assignments={rbacState.assignments}
+                activeRoleId={rbacState.activeRoleId}
+                onUpdateRbac={onUpdateRbac}
+                onToast={showToast}
+              />
+            )
+          ) : activeTab === 'timetable' ? (
+            !canManageTimetables ? (
+              <div className="bg-[#F6F2EB] border-2 border-[#111111] shadow-print rounded-[2px] p-8 text-center space-y-3">
+                <Lock className="w-8 h-8 mx-auto text-[#102D69]" />
+                <h4 className="font-tech text-lg font-bold uppercase text-[#111111]">
+                  PERMISSION REQUIRED: MANAGE TIMETABLES
+                </h4>
+                <p className="font-sans text-xs text-[#111111]/75 max-w-md mx-auto">
+                  Your active role (<strong>{activeRole?.name}</strong>) does not have <code className="font-mono">manage_timetables</code> permission. Ask an HOD/Admin to enable it in <strong>Roles &amp; Permissions</strong>.
+                </p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
               {/* Left: Image Upload + Local AI Vision Extractor */}
@@ -576,6 +648,17 @@ export default function FacultySetupModal({
                 </button>
               </div>
 
+            </div>
+            )
+          ) : !canManageCourses ? (
+            <div className="bg-[#F6F2EB] border-2 border-[#111111] shadow-print rounded-[2px] p-8 text-center space-y-3">
+              <Lock className="w-8 h-8 mx-auto text-[#102D69]" />
+              <h4 className="font-tech text-lg font-bold uppercase text-[#111111]">
+                PERMISSION REQUIRED: MANAGE COURSES &amp; MATERIALS
+              </h4>
+              <p className="font-sans text-xs text-[#111111]/75 max-w-md mx-auto">
+                Your active role (<strong>{activeRole?.name}</strong>) does not have <code className="font-mono">manage_courses</code> permission. Ask an HOD/Admin to enable it in <strong>Roles &amp; Permissions</strong>.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -10,8 +10,11 @@ import TimelineObservatory3D from './components/TimelineObservatory3D';
 import StudentHubSection from './components/StudentHubSection';
 import LocalAISection from './components/LocalAISection';
 import FacultySetupModal from './components/FacultySetupModal';
+import AcademicChatbotModal from './components/AcademicChatbotModal';
 import { COLLEGE_INFO, SECTION_TIMETABLES, COURSES_SYLLABI } from './data/cseData';
+import { SUBJECT_CORPUS } from './data/academicCorpus';
 import { loadPortalOverrides, savePortalOverrides, fetchLivePortalData } from './utils/portalStore';
+import { loadRbacState, saveRbacState } from './utils/rbac';
 import { Search, Compass, Phone, Mail, MapPin, BookOpen, Cpu } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -19,9 +22,21 @@ const CURRENT_YEAR = new Date().getFullYear();
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFacultySetupOpen, setIsFacultySetupOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [assistantCourse, setAssistantCourse] = useState('ALL');
   const [activeDomainId, setActiveDomainId] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [activeCourseCode, setActiveCourseCode] = useState(null);
   const [timetables, setTimetables] = useState(() => loadPortalOverrides().timetables || SECTION_TIMETABLES);
   const [courses, setCourses] = useState(() => loadPortalOverrides().courses || COURSES_SYLLABI);
+  const [rbacState, setRbacState] = useState(() => loadRbacState());
+
+  const activeRole = rbacState.roles.find(r => r.id === rbacState.activeRoleId) || rbacState.roles[0];
+
+  function handleUpdateRbac(nextState) {
+    setRbacState(nextState);
+    saveRbacState(nextState);
+  }
 
   useEffect(() => {
     let active = true;
@@ -74,7 +89,27 @@ export default function App() {
     if (item.type === 'domain') {
       const domainId = item.id.replace('domain-', '');
       setActiveDomainId(domainId);
+    } else if (item.type === 'course' && item.courseCode) {
+      setActiveCourseCode(item.courseCode);
+    } else if (item.type === 'timetable' && item.section) {
+      setSelectedSection(item.section);
     }
+  }
+
+  function handleOpenAssistant(courseOrCode = 'ALL') {
+    if (typeof courseOrCode === 'string') {
+      setAssistantCourse(courseOrCode);
+    } else if (courseOrCode && typeof courseOrCode === 'object') {
+      const titleLower = String(courseOrCode.title || '').toLowerCase();
+      const match = SUBJECT_CORPUS.find((s) => {
+        const words = s.title.toLowerCase().split(/\s+/).filter(w => w.length >= 5);
+        return words.some(w => titleLower.includes(w));
+      });
+      setAssistantCourse(match ? match.courseCode : 'ALL');
+    } else {
+      setAssistantCourse('ALL');
+    }
+    setIsAssistantOpen(true);
   }
 
   return (
@@ -85,9 +120,18 @@ export default function App() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onSelectResult={handleSelectResult}
+        courses={courses}
+        timetables={timetables}
       />
 
-      {/* Faculty Quick Setup Modal (Timetable Image Scanner & Course Files) */}
+      {/* VTU Academic Knowledge Assistant Modal */}
+      <AcademicChatbotModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        defaultCourse={assistantCourse}
+      />
+
+      {/* Faculty Quick Setup Modal (Timetable Image Scanner, Course Files & Discord-Style Roles) */}
       <FacultySetupModal
         isOpen={isFacultySetupOpen}
         onClose={() => setIsFacultySetupOpen(false)}
@@ -95,12 +139,16 @@ export default function App() {
         onSaveTimetables={handleSaveTimetables}
         courses={courses}
         onSaveCourses={handleSaveCourses}
+        rbacState={rbacState}
+        activeRole={activeRole}
+        onUpdateRbac={handleUpdateRbac}
       />
 
       {/* Top Navbar */}
       <Navbar
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
+        onOpenAssistant={() => handleOpenAssistant('ALL')}
       />
 
       {/* Poster Hero Section (Print Brutalist Visual Engine with SMIL Orbiting Eye & Spark) */}
@@ -300,13 +348,19 @@ export default function App() {
       {/* One-Stop Student Hub: Notice Board, Quick Portals & Chapters */}
       <StudentHubSection
         timetables={timetables}
+        selectedSection={selectedSection}
+        onSelectSection={setSelectedSection}
         onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
+        onOpenAssistant={handleOpenAssistant}
       />
 
       {/* Autonomous Curriculum & Course Materials Vault (Semesters 1–8) */}
       <CurriculumSection
         courses={courses}
         onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
+        onOpenAssistant={handleOpenAssistant}
+        activeCourseCode={activeCourseCode}
+        onSelectCourseCode={setActiveCourseCode}
       />
 
       {/* Local AI Setup Workbench for Offline Coding & Study */}

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Search, FileText, Eye, Download } from 'lucide-react';
+import { BookOpen, Search, FileText, Eye, Download, Bot } from 'lucide-react';
 import { COURSES_SYLLABI } from '../data/cseData';
 import MaterialViewerModal from './MaterialViewerModal';
 
@@ -17,11 +17,31 @@ const SEMESTERS = [
 
 const RESOURCE_TYPES = ['All', 'Syllabus', 'Notes', 'Lab Manual', 'PYQ'];
 
-export default function CurriculumSection({ courses = COURSES_SYLLABI, onOpenFacultySetup }) {
+export default function CurriculumSection({
+  courses = COURSES_SYLLABI,
+  onOpenFacultySetup,
+  onOpenAssistant,
+  activeCourseCode,
+  onSelectCourseCode
+}) {
   const [selectedSemester, setSelectedSemester] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [query, setQuery] = useState('');
-  const [activeCourse, setActiveCourse] = useState(null);
+  const [localActiveCode, setLocalActiveCode] = useState(null);
+
+  const effectiveCode = activeCourseCode !== undefined ? activeCourseCode : localActiveCode;
+  const activeCourse = useMemo(
+    () => courses.find(c => c.code === effectiveCode) || null,
+    [courses, effectiveCode]
+  );
+
+  function openCourseModal(course) {
+    if (onSelectCourseCode) {
+      onSelectCourseCode(course ? course.code : null);
+    } else {
+      setLocalActiveCode(course ? course.code : null);
+    }
+  }
 
   const filteredCourses = useMemo(() => {
     return courses.filter(c => {
@@ -201,16 +221,28 @@ export default function CurriculumSection({ courses = COURSES_SYLLABI, onOpenFac
                       ))}
                     </div>
 
-                    <button
-                      onClick={() => setActiveCourse(course)}
-                      className="w-full py-2.5 px-3 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider flex items-center justify-between cursor-pointer transition-all"
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <Eye className="w-3.5 h-3.5 text-[#F5B700]" />
-                        VIEW &amp; DOWNLOAD MATERIALS ({mats.length})
-                      </span>
-                      <Download className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openCourseModal(course)}
+                        className="flex-1 py-2.5 px-3 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider flex items-center justify-between cursor-pointer transition-all"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5 text-[#F5B700]" />
+                          VIEW &amp; DOWNLOAD ({mats.length})
+                        </span>
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                      {onOpenAssistant && (
+                        <button
+                          onClick={() => onOpenAssistant(course)}
+                          title={`Ask VTU AI Tutor about ${course.code}`}
+                          className="py-2.5 px-2.5 rounded-[2px] bg-[#F5B700] hover:bg-[#e0a800] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase flex items-center gap-1 cursor-pointer transition-all shrink-0"
+                        >
+                          <Bot className="w-3.5 h-3.5" />
+                          <span>AI</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -223,8 +255,9 @@ export default function CurriculumSection({ courses = COURSES_SYLLABI, onOpenFac
       {/* In-Site Document Viewer Modal */}
       {activeCourse && (
         <MaterialViewerModal
+          key={activeCourse.code}
           course={activeCourse}
-          onClose={() => setActiveCourse(null)}
+          onClose={() => openCourseModal(null)}
         />
       )}
     </section>

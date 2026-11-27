@@ -156,22 +156,35 @@ export function loadRbacState() {
       return {
         roles: DEFAULT_ROLES,
         assignments: DEFAULT_ASSIGNMENTS,
-        activeRoleId: 'hod_admin'
+        loggedInEmail: '',
+        activeRoleId: 'student'
       };
     }
     const parsed = JSON.parse(raw);
     return {
       roles: Array.isArray(parsed.roles) && parsed.roles.length > 0 ? parsed.roles : DEFAULT_ROLES,
       assignments: Array.isArray(parsed.assignments) ? parsed.assignments : DEFAULT_ASSIGNMENTS,
-      activeRoleId: parsed.activeRoleId || 'hod_admin'
+      loggedInEmail: parsed.loggedInEmail || '',
+      activeRoleId: parsed.loggedInEmail ? (parsed.activeRoleId || 'student') : 'student'
     };
   } catch {
     return {
       roles: DEFAULT_ROLES,
       assignments: DEFAULT_ASSIGNMENTS,
-      activeRoleId: 'hod_admin'
+      loggedInEmail: '',
+      activeRoleId: 'student'
     };
   }
+}
+
+export function isManagerRole(role) {
+  if (!role || !role.permissions) return false;
+  return Boolean(
+    role.permissions.manage_roles ||
+    role.permissions.manage_timetables ||
+    role.permissions.manage_courses ||
+    role.permissions.manage_notices
+  );
 }
 
 export function saveRbacState(state) {

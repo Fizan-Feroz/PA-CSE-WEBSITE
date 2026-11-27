@@ -1,7 +1,15 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Bot, LogIn, Shield, Settings } from 'lucide-react';
 
-export default function Navbar({ onOpenSearch }) {
+export default function Navbar({
+  onOpenSearch,
+  onOpenAssistant,
+  onOpenAccount,
+  onOpenManage,
+  isLoggedIn,
+  activeRole,
+  canManagePortal
+}) {
   return (
     <header className="sticky top-0 z-40 w-full border-b-2 border-[#111111] bg-[#E6DED4] backdrop-blur-md transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,12 +77,60 @@ export default function Navbar({ onOpenSearch }) {
             </a>
           </nav>
 
-          {/* Mobile Search Button */}
-          <div className="flex md:hidden items-center shrink-0">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {onOpenAssistant && (
+              <button
+                onClick={onOpenAssistant}
+                title="Open VTU AI Study Assistant"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#E6DED4] hover:bg-[#DCD2C6] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
+              >
+                <Bot className="w-3.5 h-3.5 text-[#102D69]" />
+                <span className="hidden sm:inline">AI TUTOR</span>
+              </button>
+            )}
+
+            {isLoggedIn && canManagePortal && onOpenManage && (
+              <button
+                onClick={onOpenManage}
+                title="Manage Timetables, Courses & Roles"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#F5B700] hover:bg-[#e0a800] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
+              >
+                <Settings className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">MANAGE</span>
+              </button>
+            )}
+
+            {onOpenAccount && (
+              isLoggedIn && activeRole ? (
+                <button
+                  onClick={onOpenAccount}
+                  title="View Account & Permissions"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
+                  style={{
+                    backgroundColor: activeRole.color,
+                    color: activeRole.color === '#F5B700' ? '#111111' : '#F6F2EB'
+                  }}
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{activeRole.name}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={onOpenAccount}
+                  title="Sign In to Portal"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-[#F5B700]" />
+                  <span className="hidden sm:inline">SIGN IN</span>
+                </button>
+              )
+            )}
+
             <button
               onClick={onOpenSearch}
               title="Search Portal (Ctrl+K)"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 cursor-pointer"
+              className="md:hidden inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 cursor-pointer"
             >
               <Search className="w-3.5 h-3.5" />
             </button>

@@ -10,11 +10,12 @@ import TimelineObservatory3D from './components/TimelineObservatory3D';
 import StudentHubSection from './components/StudentHubSection';
 import LocalAISection from './components/LocalAISection';
 import FacultySetupModal from './components/FacultySetupModal';
+import AccountModal from './components/AccountModal';
 import AcademicChatbotModal from './components/AcademicChatbotModal';
 import { COLLEGE_INFO, SECTION_TIMETABLES, COURSES_SYLLABI } from './data/cseData';
 import { SUBJECT_CORPUS } from './data/academicCorpus';
 import { loadPortalOverrides, savePortalOverrides, fetchLivePortalData } from './utils/portalStore';
-import { loadRbacState, saveRbacState } from './utils/rbac';
+import { loadRbacState, saveRbacState, hasPermission, isManagerRole } from './utils/rbac';
 import { Search, Compass, Phone, Mail, MapPin, BookOpen, Cpu } from 'lucide-react';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -22,6 +23,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFacultySetupOpen, setIsFacultySetupOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [assistantCourse, setAssistantCourse] = useState('ALL');
   const [activeDomainId, setActiveDomainId] = useState(null);
@@ -31,7 +33,11 @@ export default function App() {
   const [courses, setCourses] = useState(() => loadPortalOverrides().courses || COURSES_SYLLABI);
   const [rbacState, setRbacState] = useState(() => loadRbacState());
 
-  const activeRole = rbacState.roles.find(r => r.id === rbacState.activeRoleId) || rbacState.roles[0];
+  const isLoggedIn = Boolean(rbacState.loggedInEmail);
+  const activeRole = rbacState.roles.find(r => r.id === rbacState.activeRoleId) || rbacState.roles[rbacState.roles.length - 1];
+  const canManagePortal = isLoggedIn && isManagerRole(activeRole);
+  const canManageTimetables = isLoggedIn && hasPermission(activeRole, 'manage_timetables');
+  const canManageCourses = isLoggedIn && hasPermission(activeRole, 'manage_courses');
 
   function handleUpdateRbac(nextState) {
     setRbacState(nextState);
@@ -131,7 +137,17 @@ export default function App() {
         defaultCourse={assistantCourse}
       />
 
-      {/* Faculty Quick Setup Modal (Timetable Image Scanner, Course Files & Discord-Style Roles) */}
+      {/* Account Sign-In & Role Permissions Modal */}
+      <AccountModal
+        isOpen={isAccountOpen}
+        onClose={() => setIsAccountOpen(false)}
+        rbacState={rbacState}
+        activeRole={activeRole}
+        onUpdateRbac={handleUpdateRbac}
+        onOpenManage={() => setIsFacultySetupOpen(true)}
+      />
+
+      {/* Portal Manager Modal (Shown only when signed in with management permissions) */}
       <FacultySetupModal
         isOpen={isFacultySetupOpen}
         onClose={() => setIsFacultySetupOpen(false)}
@@ -147,8 +163,12 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
         onOpenAssistant={() => handleOpenAssistant('ALL')}
+        onOpenAccount={() => setIsAccountOpen(true)}
+        onOpenManage={() => setIsFacultySetupOpen(true)}
+        isLoggedIn={isLoggedIn}
+        activeRole={activeRole}
+        canManagePortal={canManagePortal}
       />
 
       {/* Poster Hero Section (Print Brutalist Visual Engine with SMIL Orbiting Eye & Spark) */}
@@ -350,6 +370,7 @@ export default function App() {
         timetables={timetables}
         selectedSection={selectedSection}
         onSelectSection={setSelectedSection}
+        canManageTimetables={canManageTimetables}
         onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
         onOpenAssistant={handleOpenAssistant}
       />
@@ -357,6 +378,7 @@ export default function App() {
       {/* Autonomous Curriculum & Course Materials Vault (Semesters 1–8) */}
       <CurriculumSection
         courses={courses}
+        canManageCourses={canManageCourses}
         onOpenFacultySetup={() => setIsFacultySetupOpen(true)}
         onOpenAssistant={handleOpenAssistant}
         activeCourseCode={activeCourseCode}
@@ -427,10 +449,10 @@ export default function App() {
               Spotlight Search (Ctrl+K)
             </button>
             <button
-              onClick={() => setIsFacultySetupOpen(true)}
+              onClick={() => setIsAccountOpen(true)}
               className="text-[#F6F2EB]/70 hover:text-[#F5B700] underline cursor-pointer"
             >
-              Faculty / Staff Portal
+              {isLoggedIn ? `Account (${activeRole.name})` : 'Account Sign In'}
             </button>
           </div>
         </div>

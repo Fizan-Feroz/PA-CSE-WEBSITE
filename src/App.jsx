@@ -426,6 +426,12 @@ export default function App() {
             >
               Spotlight Search (Ctrl+K)
             </button>
+            <button
+              onClick={() => setIsFacultySetupOpen(true)}
+              className="text-[#F6F2EB]/70 hover:text-[#F5B700] underline cursor-pointer"
+            >
+              Faculty / Staff Portal
+            </button>
           </div>
         </div>
 

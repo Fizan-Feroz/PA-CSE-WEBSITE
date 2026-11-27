@@ -1,7 +1,7 @@
 import React from 'react';
-import { Search, Upload, Bot } from 'lucide-react';
+import { Search } from 'lucide-react';
 
-export default function Navbar({ onOpenSearch, onOpenFacultySetup, onOpenAssistant }) {
+export default function Navbar({ onOpenSearch }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b-2 border-[#111111] bg-[#E6DED4] backdrop-blur-md transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,32 +69,12 @@ export default function Navbar({ onOpenSearch, onOpenFacultySetup, onOpenAssista
             </a>
           </nav>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {onOpenAssistant && (
-              <button
-                onClick={onOpenAssistant}
-                title="Open VTU AI Study Assistant"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#E6DED4] hover:bg-[#DCD2C6] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
-              >
-                <Bot className="w-3.5 h-3.5 text-[#102D69]" />
-                <span className="hidden sm:inline">AI TUTOR</span>
-              </button>
-            )}
-            {onOpenFacultySetup && (
-              <button
-                onClick={onOpenFacultySetup}
-                title="Faculty Timetable & Course Materials Setup"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#F5B700] hover:bg-[#e0a800] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px cursor-pointer whitespace-nowrap"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">FACULTY SETUP</span>
-              </button>
-            )}
+          {/* Mobile Search Button */}
+          <div className="flex md:hidden items-center shrink-0">
             <button
               onClick={onOpenSearch}
               title="Search Portal (Ctrl+K)"
-              className="md:hidden inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-[#102D69] hover:bg-[#163A96] text-[#F6F2EB] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase tracking-wider transition-all hover:-translate-x-px hover:-translate-y-px active:translate-x-0 active:translate-y-0 cursor-pointer"
             >
               <Search className="w-3.5 h-3.5" />
             </button>

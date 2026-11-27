@@ -19,7 +19,6 @@ const RESOURCE_TYPES = ['All', 'Syllabus', 'Notes', 'Lab Manual', 'PYQ'];
 
 export default function CurriculumSection({
   courses = COURSES_SYLLABI,
-  onOpenFacultySetup,
   onOpenAssistant,
   activeCourseCode,
   onSelectCourseCode
@@ -132,15 +131,6 @@ export default function CurriculumSection({
               </button>
             );
           })}
-
-          {onOpenFacultySetup && (
-            <button
-              onClick={onOpenFacultySetup}
-              className="ml-auto px-3 py-1 rounded-[2px] bg-[#111111] hover:bg-[#102D69] text-[#F5B700] font-tech text-xs font-bold uppercase tracking-wider cursor-pointer"
-            >
-              + ADD / UPDATE COURSE FILES
-            </button>
-          )}
         </div>
 
         {/* Course Cards Grid */}

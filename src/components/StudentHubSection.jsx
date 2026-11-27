@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Bell, ExternalLink, Compass, Users, ArrowRight, Calendar, Upload, Smartphone, CheckCircle2, AlertTriangle, Calculator, Plus, Trash2, Bot } from 'lucide-react';
+import { Bell, ExternalLink, Compass, Users, ArrowRight, Calendar, Smartphone, CheckCircle2, AlertTriangle, Calculator, Plus, Trash2, Bot } from 'lucide-react';
 import { COLLEGE_INFO, STUDENT_NOTICES, STUDENT_QUICK_LINKS, SECTION_TIMETABLES, DHI_ERP_SYSTEM } from '../data/cseData';
 
 const NOTICE_CATEGORIES = ['ALL', 'EXAMS', 'PLACEMENTS', 'CIRCULARS', 'EVENTS'];
@@ -23,7 +23,6 @@ export default function StudentHubSection({
   timetables = SECTION_TIMETABLES,
   selectedSection,
   onSelectSection,
-  onOpenFacultySetup,
   onOpenAssistant
 }) {
   const [selectedCat, setSelectedCat] = useState('ALL');
@@ -248,15 +247,6 @@ export default function StudentHubSection({
                     {tt.section}
                   </button>
                 ))}
-                {onOpenFacultySetup && (
-                  <button
-                    onClick={onOpenFacultySetup}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] bg-[#F5B700] hover:bg-[#e0a800] text-[#111111] border-2 border-[#111111] shadow-print-sm font-tech text-xs font-bold uppercase cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>UPDATE FROM IMAGE</span>
-                  </button>
-                )}
               </div>
             </div>
 
